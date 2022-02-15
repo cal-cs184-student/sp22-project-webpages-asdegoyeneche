@@ -87,4 +87,13 @@ Increasing the sampling rate (Super sampling - `Nearest sampling at 16 sample pe
 On the other hand, binearly sampling (`Bilinear sampling at 1 sample per pixel`) works as a low-pass filter on the texture map, which can effectively reduce the aliasing at those high-frequency regions without modifying the sampling rate. However, bilinear sampling can induce some blurring effect due to the reduced frequency of the feature map. 
 For the regions where the textures are smooth and have relative low frequency, difference between approaches are less obvious.
 
+## Task 6: "Level sampling" with mipmaps for texture mapping (25 pts)
+**Answer:** 
+1. From our understanding, level sampling is an efficient strategy to reduce the aliasing in the high-frequency region by pre-filtering the texture images. Alternatively, we can do super-sampling, which is much more computational expensive.
+Level sampling uses mipmaps, which are smaller, pre-filtered versions of a texture image. Therefore, we can effectively reduce the aliasing by reducing the spatial frequency of the texture images. However, level sampling can induce blurring effect to the rasterized image.
+Practically, we determine the mipmap level by evaluating the derivative of the texture coordinate w.r.t. the screen coordinate, then we sample the textures at different resolution to rasterize alias-free images.
+2. Compared to pixel-sampling, level sampling requires storing multiple mipmaps (increased memory usage). On the other hand, level sampling requires evaluating the derivative of the texture coordinates, which will slightly lower down the speed. This approach can effectively de-aliase the image. Supersampling can also de-aliase the rasterzied image, but requires much more rasterization time (evaluating 4x points for 4x super sampling) as well as memory usage to temporarily store the subpixel values. It's difficult to compare the anti-aliasing power between level sampling and super sampling, depends on the textures and locations.
+
+
+
 
