@@ -94,6 +94,16 @@ Level sampling uses mipmaps, which are smaller, pre-filtered versions of a textu
 Practically, we determine the mipmap level by evaluating the derivative of the texture coordinate w.r.t. the screen coordinate, then we sample the textures at different resolution to rasterize alias-free images.
 2. Compared to pixel-sampling, level sampling requires storing multiple mipmaps (increased memory usage). On the other hand, level sampling requires evaluating the derivative of the texture coordinates, which will slightly lower down the speed. This approach can effectively de-aliase the image. Supersampling can also de-aliase the rasterzied image, but requires much more rasterization time (evaluating 4x points for 4x super sampling) as well as memory usage to temporarily store the subpixel values. It's difficult to compare the anti-aliasing power between level sampling and super sampling, depends on the textures and locations.
 
+### Results
+Here, we visualize an image of the cutest cat on the earth: June. We use the pixel inspector to show the difference in the region of high-frequency components (eyebrows).
+1. `L_ZERO + P_NEAREST`
+![Figure_6_1](Figures/Figure6_1.jpg)
+2. `L_ZERO + P_LINEAR`
+![Figure_6_2](Figures/Figure6_2.jpg)
+3. `L_NEAREST + P_NEAREST`
+![Figure_6_3](Figures/Figure6_3.jpg)
+4. `L_NEAREST + P_NEAREST`
+![Figure_6_4](Figures/Figure6_4.jpg)
 
 
 
