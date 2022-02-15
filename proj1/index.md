@@ -1,5 +1,7 @@
 ---
 layout: default
+title: Project 1: Rasterizer
+description: Ke Wang - Alfredo De Goyeneche
 ---
 
 # Project 1 here
