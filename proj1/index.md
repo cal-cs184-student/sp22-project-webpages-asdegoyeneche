@@ -39,7 +39,7 @@ Our code overview looks like:
 
 Alternatively, we could have computed barycentric coordinates and check that alpha, beta, and gamma are all greater than 0, as done for Task 4.
 
-We have that our algorithm is no worse than one that checks each sample in the bounding box as that is exactly what we are doing. As it can be seen in the double for loop in the code above, we are going over each column and row in the bounding box only, and not sampling anything outside this region. Therefore, we our time complexity here is O(H*W) of the triangle (i.e. two times its area), but with rounding up on the height and width. 
+We have that our algorithm is no worse than one that checks each sample in the bounding box as that is exactly what we are doing. As it can be seen in the double for loop in the code above, we are going over each column and row in the bounding box only, and not sampling anything outside this region. Therefore, our time complexity here is O(H*W) of the triangle (i.e. two times its area), but with rounding up on the height and width. 
 
 ### Results
 
@@ -233,7 +233,7 @@ Bilinear sampling at 16 sample per pixel:
 Aliasing happens when the textures are of high-frequency (with sharper textures) and the sampling rate are relative low. 
 We observe aliasing at those vertical lines when we use nearest sampling at 1 sample per-pixel. 
 Increasing the sampling rate (Super sampling - `Nearest sampling at 16 sample per pixel`) can help de-alias the image.
-On the other hand, bilinear sampling (`Bilinear sampling at 1 sample per pixel`) works as a low-pass filter on the texture map, which can effectively reduce the aliasing at those high-frequency regions without modifying the sampling rate. However, bilinear sampling can induce some blurring effect due to the reduced frequency of the feature map. 
+On the other hand, bilinear sampling (`Bilinear sampling at 1 sample per pixel`) works as a low-pass filter on the texture map, which can effectively reduce the aliasing at those high-frequency regions without increasing the sampling rate. However, bilinear sampling can induce some blurring effect due to the reduced frequency of the feature map. 
 For the regions where the textures are smooth and have relative low frequency, difference between approaches are less obvious.
 
 ## Task 6: "Level sampling" with mipmaps for texture mapping (25 pts)
@@ -242,7 +242,7 @@ For the regions where the textures are smooth and have relative low frequency, d
 
 1. From our understanding, level sampling is an efficient strategy to reduce the aliasing in the high-frequency region by pre-filtering the texture images. Alternatively, we can do super-sampling, which is much more computational expensive.
 Level sampling uses mipmaps, which are smaller, pre-filtered versions of a texture image. Therefore, we can effectively reduce the aliasing by reducing the spatial frequency of the texture images. However, level sampling can induce blurring effect to the rasterized image.
-Practically, we determine the mipmap level by evaluating the derivative of the texture coordinate w.r.t. the screen coordinate, then we sample the textures at different resolution to rasterize alias-free images.
+Practically, we determine the mipmap level by evaluating the derivative of the texture coordinates w.r.t. the screen coordinates, then we sample the textures at different resolution to rasterize alias-free images.
 2. Compared to pixel-sampling, level sampling requires storing multiple mipmaps (increased memory usage). On the other hand, level sampling requires evaluating the derivative of the texture coordinates, which will slightly lower down the speed. This approach can effectively de-alias the image. Supersampling can also de-alias the rasterzied image, but requires much more rasterization time (evaluating 4x points for 4x super sampling) as well as memory usage to temporarily store the subpixel values. It's difficult to compare the anti-aliasing power between level sampling and super sampling, depends on the textures and locations.
 
 ### Results
@@ -259,7 +259,7 @@ Here, we visualize an image of the cutest cat on the earth: June. We use the pix
 
 ## Extra credit
 
-We created an approximate version of the [Shepp Logan Phantom](https://en.wikipedia.org/wiki/Shepp%E2%80%93Logan_phantom). This phantom serves as a model for the human head and it is widely used to test image reconstruction algorithms in fourier domains such as MRI. 
+We created an approximate version of the [Shepp Logan Phantom](https://en.wikipedia.org/wiki/Shepp%E2%80%93Logan_phantom). This phantom serves as a simplified model for a human brain and it is widely used to test image reconstruction algorithms in the field of medical imaging. 
 
 In order to create the figure, we need to create ellipses. However, we do not have ellipses nor circles implemented in our SVG parser and rasterization. Therefore, we created our own unit circle polygon coordinates with 100 points using Python, and used this circle as our base shape to create the phantom. For each ellipse in the figure, we added scaling, rotation and translation, and use the respective color. In the pipeline, each circle polygon in converted to triangles that we then rasterize. 
 
