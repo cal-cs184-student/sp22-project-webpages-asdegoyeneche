@@ -11,7 +11,7 @@ description: Ke Wang - Alfredo De Goyeneche
 
 ## Task 1: Drawing Single-Color Triangles (20 pts)
 
-![Figure_1_1](Figures/Figure1_1.png)
+![Figure_1_1](./Figures/Figure1_1.png)
 
 
 ## Task 2: Antialiasing by Supersampling (20 pts)
@@ -20,22 +20,22 @@ description: Ke Wang - Alfredo De Goyeneche
 
 Sampling rate 1            |  Sampling rate 4         |  Sampling rate 16        
 :-------------------------:|:-------------------------:|:-------------------------:
-![Figure1_1](Figures/Figure2_1.png)   |  ![Figure2_4](Figures/Figure2_4.png) |  ![Figure2_16](Figures/Figure2_16.png)
+![Figure1_1](./Figures/Figure2_1.png)   |  ![Figure2_4](./Figures/Figure2_4.png) |  ![Figure2_16](./Figures/Figure2_16.png)
 
 
 We have included the images not side-by-side as well below so more details can be appreciated:
 
 1. Sampling rate 1.
 
-![Figure1_1](Figures/Figure2_1.png)
+![Figure1_1](./Figures/Figure2_1.png)
 
 1. Sampling rate 4.
 
-![Figure1_1](Figures/Figure2_4.png)
+![Figure1_1](./Figures/Figure2_4.png)
 
 1. Sampling rate 16.
 
-![Figure1_1](Figures/Figure2_16.png)
+![Figure1_1](./Figures/Figure2_16.png)
 
 
 
@@ -45,7 +45,7 @@ We have included the images not side-by-side as well below so more details can b
 We made our cubeman do some dance position! We have also updated its colouring to look closer to a Baxter Robot (+ legs).
 
 
-![Figure_3_1](Figures/Figure3_1.png)
+![Figure_3_1](./Figures/Figure3_1.png)
 
 [Link to svg format](docs/my_robot.svg)
 
@@ -55,14 +55,14 @@ We made our cubeman do some dance position! We have also updated its colouring t
 **Answers:** From our understanding, the barycentric coordinates of a certain point can be represented as a linear combination of reference points (a triangle for points in a plane).
 More specifically, as shown in the figure below, suppose we have some specified values (e.g., texture, coordinates) at the vertices of a triangle: `(x_A,y_A);(x_B,y_B);(x_C,y_C)`. Then, the value of any point on the plane `(x,y)` can be written as a linear combination of the values at vertices.
 
-![Figure_4_1](Figures/Figure4_1.jpg)
+![Figure_4_1](./Figures/Figure4_1.jpg)
 Another example shows the Barycentric coords linearly interpolate colors at vertices (Figure borrowed from lecture slides):
 
-![Figure_4_2](Figures/Figure4_2.jpg)
+![Figure_4_2](./Figures/Figure4_2.jpg)
 
 ### Results:
 Interpolated color wheel:
-![Figure_4_3](Figures/Figure4_3.jpg)
+![Figure_4_3](./Figures/Figure4_3.jpg)
 
 ## Task 5: "Pixel sampling" for texture mapping (15 pts)
 **Answers:** From our understanding, pixel-sampling means that we sample the texture map at its original resolution, instead of sampling at down-sampled Mipmaps (Level sampling). For each rasterized screen sample `(x,y)`, we evaluate the corresponding texcoord value `(u,v)` and sample it at the texture map.
@@ -116,13 +116,13 @@ Color Texture::sample_bilinear(Vector2D uv, int level) {
 ```
 ### Results
 Nearest sampling at 1 sample per pixel:
-![Figure_5_1](Figures/Figure5_1.jpg)
+![Figure_5_1](./Figures/Figure5_1.jpg)
 Bilinear sampling at 1 sample per pixel:
-![Figure_5_2](Figures/Figure5_2.jpg)
+![Figure_5_2](./Figures/Figure5_2.jpg)
 Nearest sampling at 16 sample per pixel:
-![Figure_5_3](Figures/Figure5_3.jpg)
+![Figure_5_3](./Figures/Figure5_3.jpg)
 Bilinear sampling at 16 sample per pixel:
-![Figure_5_4](Figures/Figure5_4.jpg)
+![Figure_5_4](./Figures/Figure5_4.jpg)
 
 **Analysis:**
 Aliasing happens when the textures are of high-frequency (with sharper textures) and the sampling rate are relative low. 
@@ -141,17 +141,17 @@ Practically, we determine the mipmap level by evaluating the derivative of the t
 ### Results
 Here, we visualize an image of the cutest cat on the earth: June. We use the pixel inspector to show the difference in the region of high-frequency components (eyebrows).
 1. `L_ZERO + P_NEAREST`
-![Figure_6_1](Figures/Figure6_1.jpg)
+![Figure_6_1](./Figures/Figure6_1.jpg)
 2. `L_ZERO + P_LINEAR`
-![Figure_6_2](Figures/Figure6_2.jpg)
+![Figure_6_2](./Figures/Figure6_2.jpg)
 3. `L_NEAREST + P_NEAREST`
-![Figure_6_3](Figures/Figure6_3.jpg)
+![Figure_6_3](./Figures/Figure6_3.jpg)
 4. `L_NEAREST + P_NEAREST`
-![Figure_6_4](Figures/Figure6_4.jpg)
+![Figure_6_4](./Figures/Figure6_4.jpg)
 
 
 
 ## Extra credit
 
-![Figure7_1](Figures/Figure7_1.png)
+![Figure7_1](./Figures/Figure7_1.png)
 
