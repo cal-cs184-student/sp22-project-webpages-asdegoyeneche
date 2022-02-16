@@ -19,9 +19,37 @@ TODO: An overview of the project, your approach to and implementation for each o
 
 ## Task 1: Drawing Single-Color Triangles (20 pts)
 
-In order to rasterize triangles, we start by picking the bounding box that contains the triangle. This is done by picking the minimum and maximum x and y coordinates for its three vertices. 
+**Answers:**
+
+In order to rasterize triangles, we start by picking the bounding box that contains the triangle in pixel coordinates. This is done by picking the minimum and maximum x and y coordinates for its three vertices, and then taking the floor and ceil integers, respectively, to get our pixel boundaries.
+
+After this, for each pixel in this bounding box (double for loop), we check if the pixel is contained in the triangle. Here, we use the center coordinates of the pxiel (x + 0.5, y + 0.5) and check if it satisfies the three line point-in-triangle test:
+
+![Figure_1_1](./Figures/Figure1_2.jpeg)
+
+Our code overview looks like:
+```
+    for (int x = (int) floor(min(x0, min(x1, x2))); x <= (int) ceil(max(x0, max(x1, x2))); ++x) {
+      for (int y = (int) floor(min(y0, min(y1, y2))); y <= (int) ceil(max(y0, max(y1, y2))); ++y) {
+        if (line_equation_test(x + 0.5, y + 0.5, x0, x1, y0, y1) &&
+            line_equation_test(x + 0.5, y + 0.5, x1, x2, y1, y2) &&
+            line_equation_test(x + 0.5, y + 0.5, x2, x0, y2, y0)) {
+          fill_pixel(x, y, color);
+        }
+      }
+    }
+```
+
+Alternatively, we could have computed barycentric coordinates and check that alpha, beta, and gamma are all greater than 0, as done for Task 4.
+
+
+We have that our algorithm is no worse than one that checks each sample in the bouding box as that is exactly what we are doing. As it can be seen in the double foor loop in the code above, we are going over each column and row in the bounding box only, and not sampling anything outside this region. Therefore, we our time complexity here is O(H*W) of the triangle (i.e. two times its area), but with rounding up on the height and width. 
+
+Here we can find a screenshot of our `basic/test4.png` example, with the corner of the green triangle highlighted:
 
 ![Figure_1_1](./Figures/Figure1_1.png)
+
+
 
 
 ## Task 2: Antialiasing by Supersampling (20 pts)
@@ -164,6 +192,8 @@ Here, we visualize an image of the cutest cat on the earth: June. We use the pix
 ## Extra credit
 
 ![Figure7_1](./Figures/competition.png)
+
+[Link to svg format](docs/competition.svg)
 
 
 
