@@ -15,7 +15,7 @@
 
     <!--	<use xlink:href="#circle" fill="#FFFFFF"/>-->
 
-    <g transform="translate(400.0001 400.0001)">
+    <g transform="translate(400 400)">
 
         <!-- background -->
         <polygon fill="#000000" points="-400,-400 400,-400 400,400 -400,400 "/>
