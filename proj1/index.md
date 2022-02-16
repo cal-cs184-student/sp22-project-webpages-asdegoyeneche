@@ -4,9 +4,15 @@ title: Project 1 - Rasterizer
 description: Ke Wang - Alfredo De Goyeneche
 ---
 
-# Project 1 - Rasterizer
+[Link to this Website](https://cal-cs184-student.github.io/sp22-project-webpages-asdegoyeneche/proj1/index.html)
 
 [Link to Code](https://github.com/cal-cs184-student/p1-rasterizer-sp22-mr_graphics)
+
+
+# Project 1 - Rasterizer
+
+
+
 
 
 ## Task 1: Drawing Single-Color Triangles (20 pts)
@@ -155,3 +161,10 @@ Here, we visualize an image of the cutest cat on the earth: June. We use the pix
 
 ![Figure7_1](./Figures/Figure7_1.png)
 
+
+
+## Webpage and Code links:
+
+[Link to this Webpage](https://cal-cs184-student.github.io/sp22-project-webpages-asdegoyeneche/proj1/index.html): https://cal-cs184-student.github.io/sp22-project-webpages-asdegoyeneche/proj1/index.html
+
+[Link to Code](https://github.com/cal-cs184-student/p1-rasterizer-sp22-mr_graphics): https://github.com/cal-cs184-student/p1-rasterizer-sp22-mr_graphics
