@@ -13,9 +13,13 @@ description: Ke Wang - Alfredo De Goyeneche
 
 
 
+TODO: An overview of the project, your approach to and implementation for each of the parts, and what problems you encountered and how you solved them. Strive for clarity and succinctness.
+
 
 
 ## Task 1: Drawing Single-Color Triangles (20 pts)
+
+In order to rasterize triangles, we start by picking the bounding box that contains the triangle. This is done by picking the minimum and maximum x and y coordinates for its three vertices. 
 
 ![Figure_1_1](./Figures/Figure1_1.png)
 
