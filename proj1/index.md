@@ -16,15 +16,27 @@ description: Ke Wang - Alfredo De Goyeneche
 
 ## Task 2: Antialiasing by Supersampling (20 pts)
 
-1. Sampling rate 1.
+
 
 Sampling rate 1            |  Sampling rate 4         |  Sampling rate 16        
 :-------------------------:|:-------------------------:|:-------------------------:
 ![Figure1_1](Figures/Figure2_1.png)   |  ![Figure2_4](Figures/Figure2_4.png) |  ![Figure2_16](Figures/Figure2_4.png)
 
+
+We have included the images not side-by-side as well below so more details can be appreciated:
+
+1. Sampling rate 1.
+
+![Figure1_1](Figures/Figure2_1.png)
+
 1. Sampling rate 4.
 
+![Figure1_1](Figures/Figure2_4.png)
+
 1. Sampling rate 16.
+
+![Figure1_1](Figures/Figure2_16.png)
+
 
 
 ## Task 3: Transforms (10 pts)
