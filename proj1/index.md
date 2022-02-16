@@ -19,7 +19,7 @@ TODO: An overview of the project, your approach to and implementation for each o
 
 ## Task 1: Drawing Single-Color Triangles (20 pts)
 
-**Answers:**
+### Answers
 
 In order to rasterize triangles, we start by picking the bounding box that contains the triangle in pixel coordinates. This is done by picking the minimum and maximum x and y coordinates for its three vertices, and then taking the floor and ceil integers, respectively, to get our pixel boundaries.
 
@@ -45,15 +45,23 @@ Alternatively, we could have computed barycentric coordinates and check that alp
 
 We have that our algorithm is no worse than one that checks each sample in the bouding box as that is exactly what we are doing. As it can be seen in the double foor loop in the code above, we are going over each column and row in the bounding box only, and not sampling anything outside this region. Therefore, we our time complexity here is O(H*W) of the triangle (i.e. two times its area), but with rounding up on the height and width. 
 
+
+### Results
+
 Here we can find a screenshot of our `basic/test4.png` example, with the corner of the green triangle highlighted:
 
 ![Figure_1_1](./Figures/Figure1_1.png)
 
 
 
-
 ## Task 2: Antialiasing by Supersampling (20 pts)
 
+
+### Answers
+
+
+
+### Results
 
 
 Sampling rate 1            |  Sampling rate 4         |  Sampling rate 16        
@@ -90,7 +98,10 @@ We made our cubeman do some dance position! We have also updated its colouring t
 
 
 ## Task 4: Barycentric coordinates (10 pts)
-**Answers:** From our understanding, the barycentric coordinates of a certain point can be represented as a linear combination of reference points (a triangle for points in a plane).
+
+### Answers
+
+From our understanding, the barycentric coordinates of a certain point can be represented as a linear combination of reference points (a triangle for points in a plane).
 More specifically, as shown in the figure below, suppose we have some specified values (e.g., texture, coordinates) at the vertices of a triangle: `(x_A,y_A);(x_B,y_B);(x_C,y_C)`. Then, the value of any point on the plane `(x,y)` can be written as a linear combination of the values at vertices.
 
 ![Figure_4_1](./Figures/Figure4_1.jpg)
@@ -99,11 +110,15 @@ Another example shows the Barycentric coords linearly interpolate colors at vert
 ![Figure_4_2](./Figures/Figure4_2.jpg)
 
 ### Results:
+
 Interpolated color wheel:
 ![Figure_4_3](./Figures/Figure4_3.jpg)
 
 ## Task 5: "Pixel sampling" for texture mapping (15 pts)
-**Answers:** From our understanding, pixel-sampling means that we sample the texture map at its original resolution, instead of sampling at down-sampled Mipmaps (Level sampling). For each rasterized screen sample `(x,y)`, we evaluate the corresponding texcoord value `(u,v)` and sample it at the texture map.
+
+### Answers
+
+From our understanding, pixel-sampling means that we sample the texture map at its original resolution, instead of sampling at down-sampled Mipmaps (Level sampling). For each rasterized screen sample `(x,y)`, we evaluate the corresponding texcoord value `(u,v)` and sample it at the texture map.
 Since texcoord `(u,v)` does not have to be integer, 
 `nearest sampling` samples the texture value at the discretized coordinates nearest to `(u,v)`.
 
@@ -152,7 +167,9 @@ Color Texture::sample_bilinear(Vector2D uv, int level) {
     return c;
   }
 ```
+
 ### Results
+
 Nearest sampling at 1 sample per pixel:
 ![Figure_5_1](./Figures/Figure5_1.jpg)
 Bilinear sampling at 1 sample per pixel:
@@ -170,7 +187,9 @@ On the other hand, binearly sampling (`Bilinear sampling at 1 sample per pixel`)
 For the regions where the textures are smooth and have relative low frequency, difference between approaches are less obvious.
 
 ## Task 6: "Level sampling" with mipmaps for texture mapping (25 pts)
-**Answer:** 
+
+### Answers
+
 1. From our understanding, level sampling is an efficient strategy to reduce the aliasing in the high-frequency region by pre-filtering the texture images. Alternatively, we can do super-sampling, which is much more computational expensive.
 Level sampling uses mipmaps, which are smaller, pre-filtered versions of a texture image. Therefore, we can effectively reduce the aliasing by reducing the spatial frequency of the texture images. However, level sampling can induce blurring effect to the rasterized image.
 Practically, we determine the mipmap level by evaluating the derivative of the texture coordinate w.r.t. the screen coordinate, then we sample the textures at different resolution to rasterize alias-free images.
