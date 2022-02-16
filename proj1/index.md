@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Project 1: Rasterizer
+title: Project 1 - Rasterizer
 description: Ke Wang - Alfredo De Goyeneche
 ---
 
@@ -8,6 +8,32 @@ description: Ke Wang - Alfredo De Goyeneche
 
 
 [Link to Code](https://github.com/cal-cs184-student/p1-rasterizer-sp22-mr_graphics)
+
+
+## Task 1: Drawing Single-Color Triangles (20 pts)
+
+![Figure_1_1](Figures/Figure1_1.png)
+
+
+## Task 2: Antialiasing by Supersampling (20 pts)
+
+![Figure_2_1](Figures/Figure2_1.png)
+
+![Figure_2_4](Figures/Figure2_4.png)
+
+![Figure_2_16](Figures/Figure2_16.png)
+
+## Task 3: Transforms (10 pts)
+
+
+We've made our cubeman do some dance position! We have also updated its colouring to look closer to a Baxter Robot.
+
+
+![Figure_3_1](Figures/Figure3_1.png)
+
+[Link to svg format](docs/my_robot.svg)
+
+
 
 ## Task 4: Barycentric coordinates (10 pts)
 **Answers:** From our understanding, the barycentric coordinates of a certain point can be represented as a linear combination of reference points (a triangle for points in a plane).
