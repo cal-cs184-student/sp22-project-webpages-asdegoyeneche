@@ -4,8 +4,7 @@ title: Project 1 - Rasterizer
 description: Ke Wang - Alfredo De Goyeneche
 ---
 
-# Project 1 here
-
+# Project 1 - Rasterizer
 
 [Link to Code](https://github.com/cal-cs184-student/p1-rasterizer-sp22-mr_graphics)
 
@@ -17,16 +16,19 @@ description: Ke Wang - Alfredo De Goyeneche
 
 ## Task 2: Antialiasing by Supersampling (20 pts)
 
-![Figure_2_1](Figures/Figure2_1.png)
+1. Sampling rate 1.
 
-![Figure_2_4](Figures/Figure2_4.png)
+![<img src="Figures/Figure2_1.png" width="250"/>](Figures/Figure2_1.png) ![<img src="Figures/Figure2_4.png" width="250"/>](Figures/Figure2_4.png) ![<img src="Figures/Figure2_16.png" width="250"/>](Figures/Figure2_16.png)
 
-![Figure_2_16](Figures/Figure2_16.png)
+1. Sampling rate 4.
+
+1. Sampling rate 16.
+
 
 ## Task 3: Transforms (10 pts)
 
 
-We've made our cubeman do some dance position! We have also updated its colouring to look closer to a Baxter Robot.
+We made our cubeman do some dance position! We have also updated its colouring to look closer to a Baxter Robot (+ legs).
 
 
 ![Figure_3_1](Figures/Figure3_1.png)
