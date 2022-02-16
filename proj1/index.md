@@ -151,3 +151,7 @@ Here, we visualize an image of the cutest cat on the earth: June. We use the pix
 
 
 
+## Extra credit
+
+![Figure7_1](Figures/Figure7_1.png)
+
