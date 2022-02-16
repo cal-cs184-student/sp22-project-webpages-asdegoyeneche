@@ -18,7 +18,9 @@ description: Ke Wang - Alfredo De Goyeneche
 
 1. Sampling rate 1.
 
-![<img src="Figures/Figure2_1.png" width="250"/>](Figures/Figure2_1.png) ![<img src="Figures/Figure2_4.png" width="250"/>](Figures/Figure2_4.png) ![<img src="Figures/Figure2_16.png" width="250"/>](Figures/Figure2_16.png)
+Sampling rate 1            |  Sampling rate 4         |  Sampling rate 16        
+:-------------------------:|:-------------------------:|:-------------------------:
+![Figure1_1](Figures/Figure2_1.png)   |  ![Figure2_4](Figures/Figure2_4.png) |  ![Figure2_16](Figures/Figure2_4.png)
 
 1. Sampling rate 4.
 
