@@ -35,4 +35,5 @@ f_0->halfedge()=h_0;
 During the implementation, we notice that we have to be extremely careful when setting the new neighbors. One trick is to write down all the halfedges/edges and give a clear and systematic naming system, since we created a lot halfedges/edges.
 For our implementation, we assigned a new halfedge to the original `e0.halfedge()`, we found that actually the direction of the halfedge can be assigned in either way, we just have to be consistent and follow the rules.
 
-### Answers
+### Results
+![Figure_6_1](./Figures/Figure5_1.jpg)
