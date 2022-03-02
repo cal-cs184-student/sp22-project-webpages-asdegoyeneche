@@ -150,12 +150,41 @@ Without vertex normals         |   With vertex normals
 
 ### Part 4: Edge Flip (15 pts)
 
+#### Answers
+
+To implement edge flip operation we needed to reassign pointers for halfedges, faces, and vertices. Many halfedges pointers can stay same, but to make sure we don't miss any we just reassined its next, twin, vertex, edge and face for each of them. To do this, we started with the simple example provided and clearly named every vertex, halfedge and face on the original setup, and then choose what face and halfedge will be which on the new setup. With this, we just need to write some lines to set pointers for each halfedge with `setNeighbors`. We also need to re-set the halfedge for some vertices and faces. That's all we needed to do, there was some extra assignments that did no need to be updated, but helped make sure everything worked properly. All these operations run in constant amount of work and do not add or delete any elements.
+ 
+  We initially tried skipping some pointer assignments but missed some pointers which lead into hard-to-find bugs, so we went into assigning everything as explained. Something important was extracting halfedges, faces, and vertices pointers *before* doing any reassingment, otherwise these pointers would be lost or changed if we retrieve them later. Our code looks something like this:
+  
+  ```
+    \\ First, retrieve pointers
+    HalfedgeIter h0 = e0->halfedge();
+    HalfedgeIter h3 = h0->twin();
+    HalfedgeIter h1 = h0->next();
+    \\ ... etc
+    VertexIter v1 = h1->vertex();  // same as v3 initially
+    VertexIter v2 = h2->vertex();
+    \\ ... etc
+    FaceIter f0 = h0->face();
+    FaceIter f1 = h3->face();
+
+    \\ Second, assign neighbors for each half-edge
+    h0->setNeighbors(h2, h3, v5, e0, f0);  // Changes: vertex, next
+    \\ ... etc
+    
+    \\ Assign halfedged for each vertex and face
+    v1->halfedge() = h1;
+    f0->halfedge() = h0;
+    \\ ... etc
+ ```
+
+Note here that our numbering for each reassignment depends in our initial naming, so here we are not stressing the numbers of each halfedge, face and vertex, but want to show the steps needed to achieve the flip.
+
+#### Results
+
 |  Before flips         |   After flips
 :-------------------------:|:-------------------------:
 ![Figure4_1](./Figures/Figure4_1.png) |  ![Figure4_2](./Figures/Figure4_2.png)
-
-
-
 
 ### Part 5: Edge Split (15 pts)
 
