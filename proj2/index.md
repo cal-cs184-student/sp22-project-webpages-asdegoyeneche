@@ -11,12 +11,35 @@ description: Ke Wang - Alfredo De Goyeneche
 
 # Project 2 - MeshEdit
 
+## Section I: Bezier Curves and Surfaces
 
-## Part 1: 
+### Part 1: Bezier Curves with 1D de Casteljau Subdivision (10 pts)
 
+#### Answers
 
-Casteljau's algorithm and implementation:
+De Casteljau's algorithm is a recursive method to obtain points on the Bezier curve. On each recursive step we start with N control points (p_1, ..., p_n), and we obtain (N-1) intermediate control points given a parameter `t` (in 0-1 range) in the next subdivision level (p'_1, ..., p'_{n-1}). We apply this recursively until we reach a final single point that lies on the Bezier curve for the given `t` value. At each method call, we find the intermediate control points by interpolating the original control points using the parameter t:
 
+`p'_i = lerp(p_i, p_{i+1}, t) = (1-t)*p_i + t*p_{i+1}`.
+
+With this, at each level of evaluation we will obtain the new points in positions between the previous level points, converging to a single point at the end. Then, if we modify the `t` parameter from 0 to 1 we will be able to traverse over the Bezier curve from start to end. While doing this, every intermediate point is also adjusting its relative position with respect to its 'parent' points proportionally to `t`.
+
+Our implementation follows the described algorithm, where we wrote the method used on each recursive call. This methods takes N points and return N-1 intermediate points:
+
+```
+  std::vector<Vector2D> BezierCurve::evaluateStep(std::vector<Vector2D> const &points) {
+
+    // I compared (timed) approaches initialize with size vs push_back, and initializing is about twice as fast.
+    std::vector<Vector2D> output = std::vector<Vector2D>(points.size() - 1);
+    for (int i = 0; i < points.size() - 1; ++i) {
+      output[i] = points[i] * (1 - t) + points[i + 1] * t;
+    }
+    return output;
+  }
+```
+
+This method is called recursively on the obtained points until we reach a single point that is returned. We explain more about the outer loop implementation in Part 2, which was implemented by us in that part.
+
+#### Results
 
 Step 0           |  Step 1       
 :-------------------------:|:-------------------------:
@@ -32,7 +55,7 @@ Step 2          | Step 3
 
 
 
-## Part 2: 
+### Part 2: Bezier Surfaces with Separable 1D de Casteljau (15 pts)
 
 
 Teapot.bez with wireframe       |  Teapot.bez no wireframe        
@@ -40,9 +63,12 @@ Teapot.bez with wireframe       |  Teapot.bez no wireframe
 ![Figure2_2](./Figures/Figure2_1.png)   |  ![Figure2_1](./Figures/Figure2_2.png) 
 
 
+## Section II: Triangle Meshes and Half-Edge Data Structure
 
 
-## Part 3: 
+
+### Part 3: Area-Weighted Vertex Normals (10 pts)
+
 
 Without vertex normals         |   With vertex normals
 :-------------------------:|:-------------------------:
@@ -51,7 +77,7 @@ Without vertex normals         |   With vertex normals
 
 
 
-## Part 4: 
+### Part 4: Edge Flip (15 pts)
 
 |  Before flips         |   After flips
 :-------------------------:|:-------------------------:
@@ -60,9 +86,9 @@ Without vertex normals         |   With vertex normals
 
 
 
-## Part 5: Edge Split (15 pts)
+### Part 5: Edge Split (15 pts)
 
-### Answers
+#### Answers
 Steps to implement the edge split operation:
 1. Given a certain `edge` variable, we first assign all the halfedges, vertices, faces to the corresponding data structures.
 
@@ -86,7 +112,7 @@ f_0->halfedge()=h_0;
 During the implementation, we notice that we have to be extremely careful when setting the new neighbors. One trick is to write down all the halfedges/edges and give a clear and systematic naming system, since we created a lot halfedges/edges.
 For our implementation, we assigned a new halfedge to the original `e0.halfedge()`, we found that actually the direction of the halfedge can be assigned in either way, we just have to be consistent and follow the rules.
 
-### Results
+#### Results
 * Before & After split
 ![Figure_5_1](./Figures/Figure5_1.jpg)
 * Before & After split & After flip
@@ -94,8 +120,8 @@ For our implementation, we assigned a new halfedge to the original `e0.halfedge(
 
 My main debug experience is mainly on how to accurately set the halfedges. One trick we found useful is to name everything in a clear way, so that we can track which edges/halfedges are wrong.
 
-## Part 6: Loop Subdivision for Mesh Upsampling (25 pts)
-### Answers
+### Part 6: Loop Subdivision for Mesh Upsampling (25 pts)
+#### Answers
 Steps to implement the loop subdivision.
 1. We first loop through all the edges and assign the new position (interpolated by the neighbor vertices) to the edge, this will be used as the position for the generated midpoint during the edge split operation.
 
@@ -174,7 +200,7 @@ Code:
       }
 ```
 
-### Results
+#### Results
 * Here show our results on loop subdivision:
 ![Figure_6_1](./Figures/Figure6_1.jpg)
 As we can see, loop subdivision gives smaller meshes and a much more smooth surface, with more continuous textures.
@@ -190,8 +216,8 @@ One way to mitigate this is by pre-splitting the edges without interpolation (bo
 One way to alleviate the effects is to make the initial mesh symmetric, here is an easy way - split the diagonal edges on each surface.
 ![Figure_6_4](./Figures/Figure6_4.jpg)
 
-## Part 7: Design and Edit Your Own Mesh! (Optional, Possible Extra Credit)
-### Answers
+### Part 7: Design and Edit Your Own Mesh! (Optional, Possible Extra Credit)
+
 In this part, we created a warriors with a shield and a sword using Blender.
 ![Figure_7_1](./Figures/Figure7_1.jpg)
 This figure shows the results after a few steps of loop subdivision. The original warrior becomes a cute penguin-like figure.
