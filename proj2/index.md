@@ -1,4 +1,3 @@
-# Project 2 here
 ---
 layout: default
 title: Project 2 - MeshEdit
@@ -8,6 +7,54 @@ description: Ke Wang - Alfredo De Goyeneche
 [Link to (this) Webpage](https://cal-cs184-student.github.io/sp22-project-webpages-asdegoyeneche/proj2/index.html)
 
 [Link to Code](https://github.com/cal-cs184-student/p2-meshedit-sp22-mr_graphics_2)
+
+
+# Project 2 - MeshEdit
+
+
+## Part 1: 
+
+
+Casteljau's algorithm and implementation:
+
+
+Step 0           |  Step 1         |   Step 2
+:-------------------------:|:-------------------------:|:-------------------------:
+![Figure1_1](./Figures/Figure1_1.png)   |  ![Figure1_2](./Figures/Figure1_2.png) |  ![Figure1_3](./Figures/Figure1_3.png)
+Step 3           |  Step 4         |   Step 5
+![Figure1_4](./Figures/Figure1_4.png)   |  ![Figure1_5](./Figures/Figure1_5.png) |  ![Figure1_6](./Figures/Figure1_6.png)
+Step 6           |  Move Control Points        |   Change `t` parameter
+![Figure1_7](./Figures/Figure1_7.png)   |  ![Figure1_8](./Figures/Figure1_8.png) |  ![Figure1_9](./Figures/Figure1_9.png)
+
+
+
+## Part 2: 
+
+
+Teapot.bez with wireframe       |  Teapot.bez no wireframe        
+:-------------------------:|:-------------------------:
+![Figure2_2](./Figures/Figure2_1.png)   |  ![Figure2_1](./Figures/Figure2_2.png) 
+
+
+
+
+## Part 3: 
+
+Teapot.dae           |  Without vertex normals         |   With vertex normals
+:-------------------------:|:-------------------------:|:-------------------------:
+With wireframe  |  ![Figure3_1](./Figures/Figure3_1.png) |  ![Figure1_3](./Figures/Figure3_2.png)
+Without wireframe  |  ![Figure3_3](./Figures/Figure3_3.png) |  ![Figure1_6](./Figures/Figure3_4.png)
+
+
+
+## Part 4: 
+
+|  Before flips         |   After flips
+:-------------------------:|:-------------------------:
+![Figure3_1](./Figures/Figure3_1.png) |  ![Figure1_3](./Figures/Figure3_2.png)
+
+
+
 
 ## Part 5: Edge Split (15 pts)
 
