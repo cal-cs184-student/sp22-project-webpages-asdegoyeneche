@@ -11,6 +11,11 @@ description: Ke Wang - Alfredo De Goyeneche
 
 # Project 2 - MeshEdit
 
+#### Overview
+
+In this project, we work on topics on geometric modeling. We first explore the implementation of Bezier Curves and their extension to Surfaces by implementing De Casteljau's recursive algorithm. We also dive into triangle mesh manipulation with the half-edge data structure. Here, we get a feel of the effectiveness of the data structure by implementing area-weighted vertex normals, edge flips, and edge splits. Finally, we also use the data structure for doing loop subdivision for upsampling meshes.
+
+
 ## Section I: Bezier Curves and Surfaces
 
 ### Part 1: Bezier Curves with 1D de Casteljau Subdivision (10 pts)
