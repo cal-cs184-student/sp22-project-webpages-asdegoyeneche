@@ -57,6 +57,48 @@ Step 2          | Step 3
 
 ### Part 2: Bezier Surfaces with Separable 1D de Casteljau (15 pts)
 
+#### Answer
+
+To extend De Casteljau's algorithm to surfaces we just need to apply the 1D algorithm for each dimension of our surface (separable 1D de Casteljau algorithm). In this case, we have two parameters `u`, `v` that control our position in the Bezier surface.
+Given an NxN grid of control points, we first define a bezier curve parametrized by `u` for each row in our grid. Obtaining this curve follows the same recursive step as in Part 1, and we do the recursive step until we obtain a single point `P_i` on the Bezier curve for each row. Then, we pick the obtained `P_i`s from each row and define a new Bezier curve with these points. This new curve is parametrized by `v` and we run the same recursive step until we reach our final single point `P` that lies on the Bezier surface!
+
+Our implementation for this part adds the calls to the recursive function. The recursive step is the same as in Part 1, but with slight changes for datatypes:
+```
+  std::vector<Vector3D> BezierPatch::evaluateStep(std::vector<Vector3D> const &points, double t) const {
+    std::vector<Vector3D> output = std::vector<Vector3D>(points.size() - 1);
+    for (int i = 0; i < points.size() - 1; ++i) {
+      output[i] = points[i] * (1 - t) + points[i + 1] * t;
+    }
+    return output;
+  }
+```
+
+Then, we also had to implement the function to make the calls to our `evaluateStep` function. This function will run the recursive step until we reach our final point: 
+
+```
+  Vector3D BezierPatch::evaluate1D(std::vector<Vector3D> const &points, double t) const {
+    std::vector<Vector3D> _points = points;
+    for (int i = 0; i < points.size(); ++i) {
+      _points = BezierPatch::evaluateStep(_points, t);
+    }
+    return _points[0];  // points is of len 1 by now, we just retrieve the single final point.
+  }
+```
+
+Finally, we have the function that calls `evaluate1D` for each row in our grid, and later calls the function on the points obtained from each row. With this, we obtain our final point in the Bezier surface. Note that here we again can control where on the surface we want to be with the parameters `u` and `v`.
+
+```
+  Vector3D BezierPatch::evaluate(double u, double v) const {
+    std::vector<Vector3D> controlCurve = std::vector<Vector3D>(controlPoints.size());
+    for (int i = 0; i < controlPoints.size(); ++i) {
+      controlCurve[i] = evaluate1D(controlPoints[i], u);
+    }
+    return evaluate1D(controlCurve, v);
+  }
+```
+
+#### Results
+
 
 Teapot.bez with wireframe       |  Teapot.bez no wireframe        
 :-------------------------:|:-------------------------:
