@@ -111,6 +111,35 @@ Teapot.bez with wireframe       |  Teapot.bez no wireframe
 
 ### Part 3: Area-Weighted Vertex Normals (10 pts)
 
+#### Answers
+
+To implement the area-weighted vertex normals we iterated through the faces that the vertex belongs to. To do so, we first start from a halfedge associated with the vertex and check if the associated face is a boundary or not. If the face is not a boundary, we obtain the other vertices associated with this face and compute the area (0.5 times the norm of the cross product of edge vectors starting from the vertex of interest). Once we get the area, we add the face normal vector weighted by its area to a accumulator `mean_normal`.
+ Then, we go to the next face, to do so, we go to the current half edge twin, and then to the next halfedge, arriving to a halfedge in the next face. We do this until we reach back to our starting halfedge. Finally, once we accumulated the weighted normals for all faces, we normalize our final vector `mean_normal` to be of unit length and we return it!
+
+
+```
+  Vector3D Vertex::normal(void) const {
+
+    Vector3D mean_normal;
+    HalfedgeCIter hedge = halfedge();
+
+    do {
+      if (!hedge->face()->isBoundary()) {
+        auto area = 0.5 * cross(hedge->next()->vertex()->position - position,
+                                hedge->next()->next()->vertex()->position - position).norm();
+        mean_normal += area * hedge->face()->normal();
+      }
+      hedge = hedge->twin()->next();
+    } while (hedge != halfedge());
+
+    return mean_normal.unit();  // No need to normalize by total area if we normalize to unit vector
+  }
+```
+
+Fortunately, this part didn't need too much debugging. We just needed to make sure we were traversing the faces properly, but some of the provided examples in the project resources were very helpful! Also, some thought had to go into making sure we were obtaining the right vertices to compute the faces areas, and that the area sign was correct.
+
+
+#### Results
 
 Without vertex normals         |   With vertex normals
 :-------------------------:|:-------------------------:
