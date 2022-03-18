@@ -77,6 +77,77 @@ Bunny Results![Figure4_5](./Figures/bunny_m1_1024_Part4_2.png)   | Bunny Results
 
 #### 3. Images rendered with different `max_ray_depth` (Using 1024 samples)
 
-m=0        |                    m=1
-:-------------------------:|:-----------------------------------------------------------------------:
-Bunny Results![Figure4_5](./Figures/bunny_m1_1024_Part4_2.png)   | Bunny Results![Figure4_6](./Figures/bunny_m3_indirect_1024_Part4_3.png) |
+m=0        |                               m=1                               
+:-------------------------:|:---------------------------------------------------------------:
+Bunny Results![Figure4_7](./Figures/bunny_m0_1024_Part4_4.png)   | Bunny Results![Figure4_8](./Figures/bunny_m1_1024_Part4_2.png)  |
+m=2        |                               m=3                               
+Bunny Results![Figure4_9](./Figures/bunny_m2_1024_Part4_4.png)   | Bunny Results![Figure4_10](./Figures/bunny_m3_1024_Part4_4.png) |
+m=100      |                                                            
+Bunny Results![Figure4_9](./Figures/bunny_m100_1024_Part4_4.png)   |
+
+#### 4. Images rendered with different `sample-per-pixel` rates. (m=3)
+s=1        |                                s=2                                
+:-------------------------:|:-----------------------------------------------------------------:
+Dragon Results![Figure4_10](./Figures/dragon_m3_l4_1_Part4_5.png)   | Dragon Results![Figure4_11](./Figures/dragon_m3_l4_2_Part4_3.png) |
+s=4        |                                s=8                          
+Dragon Results![Figure4_12](./Figures/dragon_m3_l4_4_Part4_3.png)   | Dragon Results![Figure4_13](./Figures/dragon_m3_l4_8_Part4_3.png) |
+s=16      | s=64
+Dragon Results![Figure4_14](./Figures/dragon_m3_l4_16_Part4_3.png) | Dragon Results![Figure4_15](./Figures/dragon_m3_l4_64_Part4_3.png) |
+s=1024     |
+Dragon Results![Figure4_16](./Figures/dragon_m3_l4_1024_Part4_5.png)|
+
+
+## Part 5
+To implement the adaptive sampling, we computed the average `mu` and variance `sigma^2` every `samplesPerBatch` samples, and terminate the sampling when `I<=maxTolerance*mu`, where `I = 1.96* sqrt(sigma_2)/sqrt(actual_sample)`.
+Our implementatin codes:
+```asm
+void PathTracer::raytrace_pixel(size_t x, size_t y) {
+  int num_samples = ns_aa;          // total samples to evaluate
+  Vector2D origin = Vector2D(x, y); // bottom left corner of the pixel
+  Vector3D illum_average = Vector3D();
+  double weight = 1/(float)num_samples;
+  double s1 = 0;
+  double s2 = 0;
+  int actual_sample = 0;
+  for (int i = 0; i< num_samples; i++)
+  {
+      if (i!=0 && (i % samplesPerBatch) ==0)
+      {
+          double mu = s1/double(actual_sample);
+          double sigma_2 = (1/(double(actual_sample)-1))*((s2)-(s1*s1/(actual_sample)));
+          double I = 1.96* sqrt(sigma_2)/sqrt(actual_sample);
+          if (I<=maxTolerance*mu)
+          {
+              break;
+          }
+      }
+      Vector2D xy_sub = gridSampler->get_sample();
+      double x_image = (x+xy_sub.x)/sampleBuffer.w;
+      double y_image = (y+xy_sub.y)/sampleBuffer.h;
+      Ray ray_sample = camera->generate_ray(x_image,y_image);
+      ray_sample.depth = max_ray_depth;
+      Vector3D radiance = est_radiance_global_illumination(ray_sample);
+      s1 += radiance.illum();
+      s2 += (radiance.illum())*(radiance.illum());
+      illum_average = illum_average + radiance;
+      actual_sample++;
+
+  }
+  illum_average = illum_average/actual_sample;
+
+
+  sampleBuffer.update_pixel(illum_average, x, y);
+  sampleCountBuffer[x + y * sampleBuffer.w] = actual_sample;
+
+
+}
+```
+
+### Results
+Images rendered with adaptive sampling.
+
+Rendered image        |                            Sampling rate                             
+:-------------------------:|:--------------------------------------------------------------------:
+Bunny Results![Figure4_17](./Figures/bunny_m5_2048_Part4_5.png)   | Bunny Results![Figure4_18](./Figures/bunny_m5_2048_Part4_5_rate.png) |
+
+We can see clearly visible differences in sampling rate over various regions and pixels.
