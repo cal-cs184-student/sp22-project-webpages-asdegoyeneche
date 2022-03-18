@@ -283,7 +283,7 @@ Instead, we can do importance sampling! Here, we implement the `estimate_direct_
 | ![](./Figures/Part3_CBbunny_H_16_8.png) | ![](./Figures/Part3_bunny_16_8.png)|
 | `CBbunny.dae` with `-s 64 -l 32` | `CBbunny.dae` with `-s 64 -l 32` |
 | ![](./Figures/Part3_CBbunny_H_64_32.png) | ![](./Figures/Part3_bunny_64_32.png)|
-| `CBlucy.dae` with `-s 64 -l 32` (Material not implemented!) | `CBlucy.dae` with `-s 64 -l 32` |
+| `CBlucy.dae` with `-s 64 -l 32` (Material not implemented!) | `CBlucy.dae` with `-s 64 -l 32` (Material not implemented!) |
 | ![](./Figures/Part3_lucy_H_64_32.png) | ![](./Figures/Part3_lucy_64_32.png)|
 | `dragon.dae` with `-s 64 -l 32` (Point light!) | `dragon.dae` with `-s 64 -l 32` |
 | ![](./Figures/Part3_dragon_H_64_32.png) | ![](./Figures/Part3_dragon_64_32.png)|
@@ -291,6 +291,8 @@ Instead, we can do importance sampling! Here, we implement the `estimate_direct_
 
 
 ### Effect of number of light rays with 1 sample per pixel
+
+We compare the noise levels in soft shadows  for multiple number of light rays (`l`) when using light sampling. The noise level reduces as we increase the number of light rays. This make sense as we are obtaining a better estimate of our integral which incorporates more directions as we increase the number of rays. This is particularly important for the soft shadows, as only rays from some directions will actually make it to the source light.
 
 | `l=1 `       | `l=4    `  |
 |:-------------------------:|:-------------------------:|
