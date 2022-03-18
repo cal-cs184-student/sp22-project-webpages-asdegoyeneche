@@ -104,14 +104,127 @@ Here are a few .dae examples with normal shading:
 
 
 
-## Part II: Bounding Volume Hierarchy
+## Part II: Bounding Volume Hierarchy (BVH)
+
 
 ### BVH construction & heuristic
 
+Iterating over each primitive in the scene is not scalable, therefore a better data structure was needed. We implemented a BVH structure with simple heuristics that allows us to reduce computation from an O(n) time complexity to O(log(n))!
+
+To construct the BVH, which has a tree structure, we wrote the `construct_bvh(std::vector<Primitive *>::iterator start, std::vector<Primitive *>::iterator end, size_t max_leaf_size)` function, which starts with the root node and goes on recursively. On every recursive call, we first compute the node's bounding box by combining the bounding box of each primitive in the subtree that starts from this node. To do this, we iterate the primitives in the subtree from `start` to `end` and used the `Bbox::expand` function. We also compute the mean centroid position for the elements in the bounding box, which will be used later in our heuristic. This part of the code looks as follows:
+
+```
+  BBox bbox;
+  int num_elements = end - start;
+  Vector3D mean_centroid = Vector3D();
+
+  for (auto p = start; p != end; p++) {
+    BBox bb = (*p)->get_bbox();
+    bbox.expand(bb);
+    mean_centroid += bb.centroid();  // might want to compute only if more than max_leaf_size elements
+  }
+
+  mean_centroid /= num_elements;
+  BVHNode *node = new BVHNode(bbox);
+```
+
+If the number of elements (`num_elements`) under this node is less than the `max_leaf_size`, then we are in a leaf and we assign the node's start and end iterators to the function's input start and end. There's nothing else to do here and we proceed to return the node:
+
+```
+  if (num_elements < max_leaf_size) {
+    // if less than max_leaf_size elements just return with bounding box
+    node->start = start;
+    node->end = end;
+    return node;
+  }
+```
+
+Now, if we have more than `max_leaf_size` nodes, we need to choose along what axis to split our primitives and where within that axis to split. A simple heuristic we implemented consists of splitting the axis that has the largest length in the bounding box extent, and splitting at the centroid location of that axis. Finally, once we have the split, we assign the left and right child of the current node as the output of `construct_bvh` for each of the splits. This heuristic was both simple to implement and quick to run, and obtained good results. The code for this looks as follows:
+
+```
+  } else {  // more than `max_leaf_size` elements
+   
+    double max_extent = max(bbox.extent.x, max(bbox.extent.y, bbox.extent.z));
+    double split_point;
+    std::vector<Primitive *>::iterator bound;
+
+    if (bbox.extent.x == max_extent) {  // split along X
+      split_point = mean_centroid.x;
+      bound = partition(start, end, [split_point](Primitive *primitive) {
+                          return primitive->get_bbox().centroid().x <= split_point;
+                        }
+      );
+    } else if (bbox.extent.y == max_extent) {  // split along Y
+      split_point = mean_centroid.y;
+      bound = partition(start, end, [split_point](Primitive *primitive) {
+                          return primitive->get_bbox().centroid().y <= split_point;
+                        }
+      );
+    } else {    // split along Z
+      split_point = mean_centroid.z;
+      bound = partition(start, end, [split_point](Primitive *primitive) {
+                          return primitive->get_bbox().centroid().z <= split_point;
+                        }
+      );
+    }
+
+    if (bound - start == 0 || end - bound == 0){  // everyone has same centroid, just split in two here
+      bound = start;
+      for (int i = 0; i < (end-start) / 2; bound++, i++);
+    }
+
+    node->l = construct_bvh(start, bound, max_leaf_size);
+    node->r = construct_bvh(bound, end, max_leaf_size);
+
+  }
+
+  return node;
+``` 
+
+In some rare cases, the centroid of all elements in the subtree was the same, which caused the initial version of this heuristic to fail. In this cases, we would just split the primitives in half. This happened just one case one level before the leaf level, where we had four elements left with the same centroid along the largest extent axis.
+
+We also implemented another heuristic first, which would split just at the middle of the bounding box, but this heuristic tended to throw segfault more often. Finally, we also implemented a version that would split along the axis that would generate the most equal split. To do this, we would count how the split would distribute if separating along the subtree average primitive centroid.
+
 ### Results
+
+Here are some images with normal shading that are possible to compute super fast with our BVH acceleration. 
+
+`maxplanck.dae`           | 
+:-------------------------:
+![MaxPlanck-Part2](./Figures/maxplanck_with_bvh_Part2.png)   | 
+
+`beast.dae`           | 
+:-------------------------:
+![Beast-Part2](./Figures/beast_with_bvh_Part2.png)   | 
+
+`CBlucy.dae`           | 
+:-------------------------:
+![CBlucy-Part2](./Figures/CBlucy_with_bvh_Part2.png)   | 
+
+`blob.dae`        | 
+:-------------------------:
+![Blob-Part2](./Figures/blob_with_bvh_Part2.png)   | 
+
+`wall-e.dae`         | 
+:-------------------------:
+![WallE-Part2](./Figures/wall-e_with_bvh_Part2.png)   | 
+
+
 
 ### BVH acceleration results and analysis
 
+We benchmarked a few files in a 2019 MacBook Pro using 8 threads and producing an 800x600 image:
+
+Filename               | # of primitives |  Render time without BVH         |  Render time with BVH
+:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
+`cow.dae`       | 5856         | 30.12s        | 0.0457s 
+`maxplanck.dae` | 50801         | 333.07s      | 0.0524s
+`beast.dae`     | 64618         | 385.32s       | 0.0406s
+`CBlucy.dae`    | 133796        | Too long      | 0.0430s
+`blob.dae`      | 196608        | Too long      | 0.0558s
+`wall-e.dae`    | 240326        | Too long      | 0.0579s
+
+As we can see, by using BVH acceleration we have that rendering time almost doesnt suffer when we increase the number of primitives. From the `cow.dae` to the `maxplanck.dae` we have about 10 times the number of primitives, and as a result the render without BVH takes about 10 times longer (which is what we expected! o(n)). On the other hand, the time with BVH implementation barely changes over all renderings. We would expect the time to increase around 25% from the cow to maxplanck (log(50801) / log(5856)), however, it seems that at this point the data structure is quite efficient that the bottleneck is in other operations in the pipeline. BVH is great!
 
 
 
