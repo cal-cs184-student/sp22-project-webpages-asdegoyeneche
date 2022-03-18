@@ -89,17 +89,11 @@ To optimize a bit the computation, we computed the barycentric coordinates only 
 
 Here are a few .dae examples with normal shading:
 
-`CBempty.dae`           | 
-:-------------------------:
-![CBempty_Part1](./Figures/CBempty_Part1.png)   | 
-
-`CBgems.dae`        | 
-:-------------------------:
-![CBgems_Part1](./Figures/CBgems_Part1.png)   | 
-
-`CBspheres.dae`         | 
-:-------------------------:
-![CBspheres_Part1](./Figures/CBspheres_Part1.png)   | 
+| `CBempty.dae`           |  `CBgems.dae`        |
+|:-------------------------:|:-------------------------:|
+|![CBempty_Part1](./Figures/CBempty_Part1.png)   | ![CBgems_Part1](./Figures/CBgems_Part1.png)   | 
+| `CBspheres.dae`         |  |
+| ![CBspheres_Part1](./Figures/CBspheres_Part1.png)   |  |
 
 
 
@@ -189,40 +183,27 @@ We also implemented another heuristic first, which would split just at the middl
 
 Here are some images with normal shading that are possible to compute super fast with our BVH acceleration. 
 
-`maxplanck.dae`           | 
-:-------------------------:
-![MaxPlanck-Part2](./Figures/maxplanck_with_bvh_Part2.png)   | 
-
-`beast.dae`           | 
-:-------------------------:
-![Beast-Part2](./Figures/beast_with_bvh_Part2.png)   | 
-
-`CBlucy.dae`           | 
-:-------------------------:
-![CBlucy-Part2](./Figures/CBlucy_with_bvh_Part2.png)   | 
-
-`blob.dae`        | 
-:-------------------------:
-![Blob-Part2](./Figures/blob_with_bvh_Part2.png)   | 
-
-`wall-e.dae`         | 
-:-------------------------:
-![WallE-Part2](./Figures/wall-e_with_bvh_Part2.png)   | 
-
+| `maxplanck.dae`           | `beast.dae`           |
+|:-------------------------:|:-------------------------:|
+|![MaxPlanck-Part2](./Figures/maxplanck_with_bvh_Part2.png)   | ![Beast-Part2](./Figures/beast_with_bvh_Part2.png)   | 
+| `CBlucy.dae`           |  `blob.dae`        | 
+| ![CBlucy-Part2](./Figures/CBlucy_with_bvh_Part2.png)   | ![Blob-Part2](./Figures/blob_with_bvh_Part2.png)   | 
+|`wall-e.dae`         |  |
+|![WallE-Part2](./Figures/wall-e_with_bvh_Part2.png)   |  |
 
 
 ### BVH acceleration results and analysis
 
 We benchmarked a few files in a 2019 MacBook Pro using 8 threads and producing an 800x600 image:
 
-Filename               | # of primitives |  Render time without BVH         |  Render time with BVH
-:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
-`cow.dae`       | 5856         | 30.12s        | 0.0457s 
-`maxplanck.dae` | 50801         | 333.07s      | 0.0524s
-`beast.dae`     | 64618         | 385.32s       | 0.0406s
-`CBlucy.dae`    | 133796        | Too long      | 0.0430s
-`blob.dae`      | 196608        | Too long      | 0.0558s
-`wall-e.dae`    | 240326        | Too long      | 0.0579s
+| Filename               | # of primitives |  Render time without BVH         |  Render time with BVH |
+| :-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|
+| `cow.dae`       | 5856         | 20.12s        | 0.0457s   |
+| `maxplanck.dae` | 50801         | 221.82s      | 0.0524s  |
+| `beast.dae`     | 64618         | 385.32s       | 0.0406s  |
+| `CBlucy.dae`    | 133796        | Too long      | 0.0430s  |
+| `blob.dae`      | 196608        | Too long      | 0.0558s  |
+| `wall-e.dae`    | 240326        | Too long      | 0.0579s  |
 
 As we can see, by using BVH acceleration we have that rendering time almost doesnt suffer when we increase the number of primitives. From the `cow.dae` to the `maxplanck.dae` we have about 10 times the number of primitives, and as a result the render without BVH takes about 10 times longer (which is what we expected! o(n)). On the other hand, the time with BVH implementation barely changes over all renderings. We would expect the time to increase around 25% from the cow to maxplanck (log(50801) / log(5856)), however, it seems that at this point the data structure is quite efficient that the bottleneck is in other operations in the pipeline. BVH is great!
 
@@ -297,37 +278,37 @@ Vector3D PathTracer::at_least_one_bounce_radiance(const Ray &r,
 ### Results
 #### 1. Images rendered with global (direct and indirect) illumination (Using 1024 samples)
 
-Direct illumination (m=1)          |                   Indirect illumination (m=5)                    
-:-------------------------:|:----------------------------------------------------------------:
-Bunny Results![Figure4_1](./Figures/bunny_m1_1024_Part4_2.png)   |  Bunny Results![Figure4_2](./Figures/bunny_m5_1024_Part4_2.png)  |  
-Sphere Results![Figure4_3](./Figures/spheres_m1_1024_Part4_2.png)   | Bunny Results![Figure4_4](./Figures/spheres_m5_1024_Part4_2.png) |  
+| Direct illumination (m=1)          |                   Indirect illumination (m=5)        |            
+| :-------------------------:|:----------------------------------------------------------------: |
+| Bunny Results![Figure4_1](./Figures/bunny_m1_1024_Part4_2.png)   |  Bunny Results![Figure4_2](./Figures/bunny_m5_1024_Part4_2.png)  |  
+| Sphere Results![Figure4_3](./Figures/spheres_m1_1024_Part4_2.png)   | Bunny Results![Figure4_4](./Figures/spheres_m5_1024_Part4_2.png) |  
 
 #### 2. Images rendered with only `direct` illumination and only `indirect` illumination (Using 1024 samples)
 
-Only Direct illumination (m=1)          |                    Only Indirect illumination (m=3)                     
-:-------------------------:|:-----------------------------------------------------------------------:
-Bunny Results![Figure4_5](./Figures/bunny_m1_1024_Part4_2.png)   | Bunny Results![Figure4_6](./Figures/bunny_m3_indirect_1024_Part4_3.png) |
+| Only Direct illumination (m=1)          |                    Only Indirect illumination (m=3)        |              
+| :-------------------------:|:-----------------------------------------------------------------------:|
+|Bunny Results![Figure4_5](./Figures/bunny_m1_1024_Part4_2.png)   | Bunny Results![Figure4_6](./Figures/bunny_m3_indirect_1024_Part4_3.png) |
 
 #### 3. Images rendered with different `max_ray_depth` (Using 1024 samples)
 
-m=0        |                               m=1                               
-:-------------------------:|:---------------------------------------------------------------:
-Bunny Results![Figure4_7](./Figures/bunny_m0_1024_Part4_4.png)   | Bunny Results![Figure4_8](./Figures/bunny_m1_1024_Part4_2.png)  |
-m=2        |                               m=3                               
-Bunny Results![Figure4_9](./Figures/bunny_m2_1024_Part4_4.png)   | Bunny Results![Figure4_10](./Figures/bunny_m3_1024_Part4_4.png) |
-m=100      |                                                            
-Bunny Results![Figure4_9](./Figures/bunny_m100_1024_Part4_4.png)   |
+| m=0        |                               m=1                      |          
+|:-------------------------:|:---------------------------------------------------------------:|
+| Bunny Results![Figure4_7](./Figures/bunny_m0_1024_Part4_4.png)   | Bunny Results![Figure4_8](./Figures/bunny_m1_1024_Part4_2.png)  |
+|m=2        |                               m=3              |                 
+| Bunny Results![Figure4_9](./Figures/bunny_m2_1024_Part4_4.png)   | Bunny Results![Figure4_10](./Figures/bunny_m3_1024_Part4_4.png) |
+| m=100      |           |                                                  
+| Bunny Results![Figure4_9](./Figures/bunny_m100_1024_Part4_4.png)   | |
 
 #### 4. Images rendered with different `sample-per-pixel` rates. (m=3)
-s=1        |                                s=2                                
-:-------------------------:|:-----------------------------------------------------------------:
-Dragon Results![Figure4_10](./Figures/dragon_m3_l4_1_Part4_5.png)   | Dragon Results![Figure4_11](./Figures/dragon_m3_l4_2_Part4_3.png) |
-s=4        |                                s=8                          
-Dragon Results![Figure4_12](./Figures/dragon_m3_l4_4_Part4_3.png)   | Dragon Results![Figure4_13](./Figures/dragon_m3_l4_8_Part4_3.png) |
-s=16      | s=64
-Dragon Results![Figure4_14](./Figures/dragon_m3_l4_16_Part4_3.png) | Dragon Results![Figure4_15](./Figures/dragon_m3_l4_64_Part4_3.png) |
-s=1024     |
-Dragon Results![Figure4_16](./Figures/dragon_m3_l4_1024_Part4_5.png)|
+| s=1        |                                s=2       |                          
+| :-------------------------:|:-----------------------------------------------------------------:|
+| Dragon Results![Figure4_10](./Figures/dragon_m3_l4_1_Part4_5.png)   | Dragon Results![Figure4_11](./Figures/dragon_m3_l4_2_Part4_3.png) |
+| s=4        |                                s=8    |                      
+| Dragon Results![Figure4_12](./Figures/dragon_m3_l4_4_Part4_3.png)   | Dragon Results![Figure4_13](./Figures/dragon_m3_l4_8_Part4_3.png) |
+| s=16      | s=64 |
+| Dragon Results![Figure4_14](./Figures/dragon_m3_l4_16_Part4_3.png) | Dragon Results![Figure4_15](./Figures/dragon_m3_l4_64_Part4_3.png) |
+| s=1024     |  |  
+| Dragon Results![Figure4_16](./Figures/dragon_m3_l4_1024_Part4_5.png)|  |
 
 
 
@@ -381,8 +362,8 @@ void PathTracer::raytrace_pixel(size_t x, size_t y) {
 ### Results
 Images rendered with adaptive sampling.
 
-Rendered image        |                            Sampling rate                             
-:-------------------------:|:--------------------------------------------------------------------:
-Bunny Results![Figure4_17](./Figures/bunny_m5_2048_Part4_5.png)   | Bunny Results![Figure4_18](./Figures/bunny_m5_2048_Part4_5_rate.png) |
+| Rendered image        |                            Sampling rate               |               
+| :-------------------------:|:--------------------------------------------------------------------:|
+| Bunny Results![Figure4_17](./Figures/bunny_m5_2048_Part4_5.png)   | Bunny Results![Figure4_18](./Figures/bunny_m5_2048_Part4_5_rate.png) |
 
 We can see clearly visible differences in sampling rate over various regions and pixels.
