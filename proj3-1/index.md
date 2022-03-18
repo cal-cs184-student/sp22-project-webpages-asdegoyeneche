@@ -300,17 +300,16 @@ Vector3D PathTracer::at_least_one_bounce_radiance(const Ray &r,
 | Bunny Results![Figure4_9](./Figures/bunny_m100_1024_Part4_4.png)   | |
 
 #### 4. Images rendered with different `sample-per-pixel` rates. (m=3)
-| s=1        |                                s=2       |                          
-| :-------------------------:|:-----------------------------------------------------------------:|
+
+| s=1       |                               s=2                     |          
+|:-------------------------:|:---------------------------------------------------------------:|
 | Dragon Results![Figure4_10](./Figures/dragon_m3_l4_1_Part4_5.png)   | Dragon Results![Figure4_11](./Figures/dragon_m3_l4_2_Part4_3.png) |
-| s=4        |                                s=8    |                      
+| s=4         |                               s=8              |                 
 | Dragon Results![Figure4_12](./Figures/dragon_m3_l4_4_Part4_3.png)   | Dragon Results![Figure4_13](./Figures/dragon_m3_l4_8_Part4_3.png) |
-| s=16      | s=64 |
+| s=16         |                               s=64              |                 
 | Dragon Results![Figure4_14](./Figures/dragon_m3_l4_16_Part4_3.png) | Dragon Results![Figure4_15](./Figures/dragon_m3_l4_64_Part4_3.png) |
-| s=1024     |  |  
-| Dragon Results![Figure4_16](./Figures/dragon_m3_l4_1024_Part4_5.png)|  |
-
-
+| s=1024      |           |                                                  
+| Dragon Results![Figure4_16](./Figures/dragon_m3_l4_1024_Part4_5.png)   | |
 
 ## Part V: Adaptive Sampling
 
