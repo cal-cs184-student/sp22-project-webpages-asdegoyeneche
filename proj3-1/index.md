@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Project 2 - Pathtracer
+title: Project 3.1 - Pathtracer
 description: Ke Wang - Alfredo De Goyeneche
 ---
 
@@ -8,9 +8,34 @@ description: Ke Wang - Alfredo De Goyeneche
 
 [Link to Code](https://github.com/cal-cs184-student/p3-1-pathtracer-sp22-mr_graphics_3)
 
-# Project 2 - Pathtracer
 
-## Part 4:
+# Project 3-1 Pathtracer
+
+#### Overview
+
+Some overview
+
+
+## Part I: Ray Generation and Scene Intersection
+
+
+
+## Part II: Bounding Volume Hierarchy
+
+
+
+## Part III: Direct Illumination
+
+
+
+
+
+
+
+
+
+## Part IV: Global Illumination
+
 ### Implementation of the indirect light function
 In this part, we implemented the algorithm to perform indirect light rendering. Recall from Part 3, where we successfully implemented `one_bounce_radiance` function. Here, we recursively call that function to estimate the higher bounces.
 Specifically, assume we have the intersection for the first bounce, we can create a new ray starting from the intersection with a sampled input light direction. Then, we can recursively call the `one_bounce_radiance` on top of the new rays.
@@ -97,7 +122,9 @@ s=1024     |
 Dragon Results![Figure4_16](./Figures/dragon_m3_l4_1024_Part4_5.png)|
 
 
-## Part 5
+
+## Part V: Adaptive Sampling
+
 To implement the adaptive sampling, we computed the average `mu` and variance `sigma^2` every `samplesPerBatch` samples, and terminate the sampling when `I<=maxTolerance*mu`, where `I = 1.96* sqrt(sigma_2)/sqrt(actual_sample)`.
 Our implementatin codes:
 ```asm
