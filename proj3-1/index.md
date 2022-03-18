@@ -367,3 +367,8 @@ Images rendered with adaptive sampling.
 | Bunny Results![Figure4_17](./Figures/bunny_m5_2048_Part4_5.png)   | Bunny Results![Figure4_18](./Figures/bunny_m5_2048_Part4_5_rate.png) |
 
 We can see clearly visible differences in sampling rate over various regions and pixels.
+
+
+## Note on collaboration
+
+We've been working together since the first project, as well as collaborating in research in our lab. For the CS284A course projects we've worked independently on the each task of the coding part of the assignment (in separate branches), and we would discuss issues / point out bugs / discuss alternative implementations. At the end we would either merge one of the two branches into master or combine parts of each branch. Now, for the write-up, we usually split the tasks. This has been working since we both have tight schedules and allows both of us to dig into the code (and learn in this process), but we think it might be worth trying to more actively collaborate to speed up the process. 
