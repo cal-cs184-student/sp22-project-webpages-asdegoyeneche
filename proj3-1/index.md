@@ -200,7 +200,7 @@ We benchmarked a few files in a 2019 MacBook Pro using 8 threads and producing a
 | :-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|
 | `cow.dae`       | 5856         | 20.12s        | 0.0457s   |
 | `maxplanck.dae` | 50801         | 221.82s      | 0.0524s  |
-| `beast.dae`     | 64618         | 385.32s       | 0.0406s  |
+| `beast.dae`     | 64618         | 283.56s       | 0.0406s  |
 | `CBlucy.dae`    | 133796        | Too long      | 0.0430s  |
 | `blob.dae`      | 196608        | Too long      | 0.0558s  |
 | `wall-e.dae`    | 240326        | Too long      | 0.0579s  |
