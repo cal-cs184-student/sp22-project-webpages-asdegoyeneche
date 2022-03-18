@@ -213,11 +213,22 @@ As we can see, by using BVH acceleration we have that rendering time almost does
 
 ### Direct lighting function
 
-We wrote two versions for direct lighting: `Direct Lighting with Uniform Hemisphere Sampling` and `Direct Lighting by Importance Sampling Lights`. We will go over both of them:
+We wrote two versions for direct lighting: `Direct Lighting with Uniform Hemisphere Sampling` and `Direct Lighting by Importance Sampling Lights`. In both approaches, we trace _inverse_ rays: we cast a ray from the camera through a specific pixel until it intersects something in the scene. We then calculate how much light is reflected back towards the camera by calculating how much light arrived at that intersection point from elsewhere.
+
+To estimate how much light at the intersection point, we use the following Monte Carlo estimator described in lecture:
+
+![Figure3_radiance](./Figures/Figure3_radiance.png)
+
+Here, `p` (`hit_p` in the code) is the intersection point, `wr` (`w_out`) is the outgoing direction, and `w_j` (`w_in`) is the incoming ray direction (which we will sample with two strategies).
+
+Once we have an estimate of the incoming light we can use the reflection equation to calculate how much outgoing light will be.
 
 
 ####  Direct Lighting with Uniform Hemisphere Sampling
 
+Here, we implemented `estimate_direct_lighting_hemisphere`. In this method, we  estimate the direct lighting on a point by sampling `wj` uniformly in a hemisphere. Up to this task, we only check for direct illumination, so we want to check if the ray from `hit_p` in the sampled direction intersects a light source.  
+
+The code looks as follows:
 
 ```
     double ds = 1.0 / (double) num_samples;  // integrate over samples "ds"
@@ -234,6 +245,10 @@ We wrote two versions for direct lighting: `Direct Lighting with Uniform Hemisph
 ```
 
 ####  Direct Lighting by Importance Sampling Lights
+
+Uniform sampling in the hemisphere produces noisy results since the approach is not efficient on the samples: we sample a lot of rays that don't hit a light source and are wasted. However, as we increase the number of samples, we will inefficiently converge to the right noise-free solution.
+
+Instead, we can do importance sampling! Here, we implement the `estimate_direct_lighting_importance` method, where we sample the lights directly rather than uniformly distributed directions. To do so, for each light in the scene, we sample directions between the light source and the intersection point `hit_p`. The code looks as follows:
 
 
 ```
@@ -260,12 +275,33 @@ We wrote two versions for direct lighting: `Direct Lighting with Uniform Hemisph
 
 ### Results for both implementations fo direct lighting function
 
+ Here are some images rendered with both implementations of the direct lighting function. We can see that for `CBlucy.dae` we have not implemented the material and the for `dragon.png` hemisphere sampling completely fails since we have a point light source that is unlikely to  get sampled.
+
+| Uniform Hemisphere Sampling        | Importance Sampling Lights      |
+|:-------------------------:|:-------------------------:|
+| `CBbunny.dae` with `-s 16 -l 8` | `CBbunny.dae` with `-s 16 -l 8` |
+| ![](./Figures/Part3_CBbunny_H_16_8.png) | ![](./Figures/Part3_bunny_16_8.png)|
+| `CBbunny.dae` with `-s 64 -l 32` | `CBbunny.dae` with `-s 64 -l 32` |
+| ![](./Figures/Part3_CBbunny_H_64_32.png) | ![](./Figures/Part3_bunny_64_32.png)|
+| `CBlucy.dae` with `-s 64 -l 32` (Material not implemented!) | `CBlucy.dae` with `-s 64 -l 32` |
+| ![](./Figures/Part3_lucy_H_64_32.png) | ![](./Figures/Part3_lucy_64_32.png)|
+| `dragon.dae` with `-s 64 -l 32` (Point light!) | `dragon.dae` with `-s 64 -l 32` |
+| ![](./Figures/Part3_dragon_H_64_32.png) | ![](./Figures/Part3_dragon_64_32.png)|
+
+
+
 ### Effect of number of light rays with 1 sample per pixel
+
+| `l=1 `       | `l=4    `  |
+|:-------------------------:|:-------------------------:|
+| ![](./Figures/Part3bunny_1_1.png) | ![](./Figures/Part3bunny_1_4.png)|
+| `l=16` | `l=64` |
+| ![](./Figures/Part3bunny_1_16.png) | ![](./Figures/Part3bunny_1_64.png)|
+
 
 ### Analysis
 
-
-
+We can clearly see a big improvement by using importance lighting sampling instead of hemisphere sampling. Importance sampling allows us to focus our samples on rays that will actually contribute to the integral estimate, allowing us to reduce noise and avoid complete fails where sampling the light source is unlikely (e.g. point source light as in `dragon.dae`).
 
 
 ## Part IV: Global Illumination
