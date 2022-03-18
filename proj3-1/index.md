@@ -213,6 +213,51 @@ As we can see, by using BVH acceleration we have that rendering time almost does
 
 ### Direct lighting function
 
+We wrote two versions for direct lighting: `Direct Lighting with Uniform Hemisphere Sampling` and `Direct Lighting by Importance Sampling Lights`. We will go over both of them:
+
+
+####  Direct Lighting with Uniform Hemisphere Sampling
+
+
+```
+    double ds = 1.0 / (double) num_samples;  // integrate over samples "ds"
+    for (int i=0; i<num_samples; i++){
+      Vector3D w_in = hemisphereSampler->get_sample();
+      Ray ray = Ray(hit_p, o2w * w_in);
+      ray.min_t = EPS_F;
+      Intersection intersection;
+      if (bvh->intersect(ray, &intersection)){
+        L_out += isect.bsdf->f(w_out,w_in) * intersection.bsdf->get_emission() * cos_theta(w_in) * (2 * PI) * ds;
+      }
+    }
+
+```
+
+####  Direct Lighting by Importance Sampling Lights
+
+
+```
+    for (auto *light: scene->lights){
+      samples_per_light = light->is_delta_light() ? 1 : (int) ns_area_light;  // if point light just sample once
+      ds = 1.0 / double (samples_per_light);  // sample weight
+
+      for (int i=0; i<=samples_per_light; i++){
+        L_i = light->sample_L(hit_p, &w_in, &distToLight, &pdf);
+        w_in_object = w2o * w_in;
+        
+        if (w_in_object.z >= 0){
+          ray = Ray(hit_p, w_in);
+          ray.min_t = EPS_F;
+          ray.max_t = distToLight - EPS_F;
+          if (!bvh->has_intersection(ray)){
+            L_out += isect.bsdf->f(w_out, w_in_object) * L_i * cos_theta(w_in_object) * ds / pdf;
+          }
+        }
+      }
+    }
+
+```
+
 ### Results for both implementations fo direct lighting function
 
 ### Effect of number of light rays with 1 sample per pixel
