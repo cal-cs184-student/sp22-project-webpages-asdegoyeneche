@@ -13,22 +13,117 @@ description: Ke Wang - Alfredo De Goyeneche
 
 #### Overview
 
-Some overview
+We utilized a pathtracing algorithm to implement the core routines of a physically-based renderer. We implemented functionality for ray generation and scene intersection, we accelerated the process by implementing a Bounding Volume Hierarchy data structure, we implemented direct and global illumination, and we finally implemented adaptive sampling to reduce noise in our images.
 
 
 ## Part I: Ray Generation and Scene Intersection
+
+### Ray generation and primitive intersection
+
+To generate rays we start from normalized image coordinates (x,y). We first must convert the image coordinates into the camera space and then into the world space. Our normalized image space is in the range of (0,0) to (1,1), and our camera space is in the range (-tan(0.5 * hFOV), -tan(0.5 * vFOV)) to (tan(0.5 * hFOV), tan(0.5 * vFOV)). This first transform is a simple linear mapping. Then, we convert the camera space coordinates into world space using the camera's camera-to-world rotation matrix `c2w`. Finally, the origin of our ray is the camera's position `p`. We have:
+
+```
+  Ray Camera::generate_ray(double x, double y) const {
+    Vector3D direction = c2w * Vector3D(tan(radians(hFov / 2)) * (2 * x - 1),
+                                        tan(radians(vFov / 2)) * (2 * y - 1),
+                                        -1);
+    direction.normalize();
+
+    return Ray(pos, direction);
+  }
+```
+
+We then use this `generate_ray` function when we estimate the radiance for pixel samples. For each sample we create a ray, and this ray will later intersect elements in the scene. The code looks as follows (remember that `generate_ray` takes normalized coordinates):
+
+```
+  Vector3D average_radiance;
+  for (int i = 0; i < num_samples; ++i) {
+    Vector2D offset = gridSampler->get_sample();
+    Ray ray = camera->generate_ray((x + offset.x) / sampleBuffer.w, (y + offset.y) / sampleBuffer.h);
+    average_radiance += est_radiance_global_illumination(ray)  / (double) num_samples;
+  }
+```
+
+Finally, we intersect primitives. There are two functions we implement for each primitive: `has_intersection(const Ray &r)` and `intersect(const Ray &r, Intersection *i)`. The first one simple checks if there's an intersection between the primitive and the input ray. The second also reports the nearest intersection point (including the location by reporting the time parameter for the ray, the surface normal at intersection, and also reports the surface material BSDF). 
+
+To intersect a primitive we need to find if there's a valid time t at the intersection point. This time has to be positive and be within the range of the ray's `min_t` and `max_t`. This range is initially set to `nclip` and `fclip` where everything outside this range is invisible to the camera. Every time we intersect a triangle we update the `max_t` parameter with the current intersection time in order to keep to closest intersection.
+
+
+### Triangle intersection algorithm
+
+We implemented two algorithms to intersect triangles. I will explain one of them: the Moller Trumbore Algorithm.
+The Moller Trumbore Algorithm is an optimized version of triangle intersection with a ray that allows fast computation requiring 1 division, 27 multiplications and 17 add operations. With this algorithm, we obtain the time of intersection `t`, and the intersection in barycentric coordinates (`b0`, `b1`, `b2`). The algorithm takes triangle vertices, ray origin `O` and ray direction `D` as inputs. We seek to solve `O + t*D = (1-b1-b2)*P0 + b1*P1 + b2*P2`, where `P0`, `P1`, `P2` are the triangle vertex coordinates. Slide from class:
+
+![Figure_moller](./Figures/Figure1_moller.png)
+
+To optimize a bit the computation, we computed the barycentric coordinates only if the intersection time was valid. With the barycentric coordinates we can compute the average normal at the intersection point easily. The code is as follows:
+
+```
+  Vector3D E1 = p2 - p1;
+  Vector3D E2 = p3 - p1;
+  Vector3D S = r.o - p1;
+  Vector3D S1 = cross(r.d, E2);
+  Vector3D S2 = cross(S, E1);
+
+  double divisor = dot(S1, E1);
+  double t = dot(S2, E2) / divisor;
+
+  if (t >= 0 && t >= r.min_t && t <= r.max_t) {  // intersects the plane with t in valid range
+    double b2 = dot(S1, S) / divisor;  // baricentric coefficient for vertex 2
+    double b3 = dot(S2, r.d) / divisor;  // baricentric coefficient for vertex 3
+    double b1 = 1 - b2 - b3;
+
+    if (b1 >= 0 && b2 >= 0 && b3 >= 0) {  // intersects the triangle!
+      r.max_t = t;  // Update ray's max intersection time!
+      isect->t = t;
+      isect->n = b1 * n1 + b2 * n2 + b3 * n3;  // Let's get the mean normal at the intersection point
+      isect->primitive = this;
+      isect->bsdf = get_bsdf();
+      return true;
+    }
+  }
+  return false;
+```
+
+### Results
+
+Here are a few .dae examples with normal shading:
+
+`CBempty.dae`           | 
+:-------------------------:
+![CBempty_Part1](./Figures/CBempty_Part1.png)   | 
+
+`CBgems.dae`        | 
+:-------------------------:
+![CBgems_Part1](./Figures/CBgems_Part1.png)   | 
+
+`CBspheres.dae`         | 
+:-------------------------:
+![CBspheres_Part1](./Figures/CBspheres_Part1.png)   | 
+
 
 
 
 ## Part II: Bounding Volume Hierarchy
 
+### BVH construction & heuristic
+
+### Results
+
+### BVH acceleration results and analysis
+
+
 
 
 ## Part III: Direct Illumination
 
+### Direct lighting function
 
+### Results for both implementations fo direct lighting function
 
+### Effect of number of light rays with 1 sample per pixel
 
+### Analysis
 
 
 
