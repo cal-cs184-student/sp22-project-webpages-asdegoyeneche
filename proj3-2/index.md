@@ -15,7 +15,7 @@ description: Ke Wang - Alfredo De Goyeneche
 
 In this project, we added additional features to our ray tracer! These included new materials involving reflection and/or refraction such as mirror and glass, and microfacet material. We also simulated a thin-lens camera model, where we were able to generate images with different planes of focus and lens radius obtaining different levels of blurring!
 
-Please grade parts 2 and 4.
+Please grade parts 1 and 4.
 
 
 ## Part I: Mirror and Glass Materials (Graded).
