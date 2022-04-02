@@ -13,6 +13,7 @@ description: Ke Wang - Alfredo De Goyeneche
 
 #### Overview
 
+In this project, we added additional features to our ray tracer! These included new materials involving reflection and/or refraction such as mirror and glass, and microfacet material. We also simulated a thin-lens camera model, where we were able to generate images with different planes of focus and lens radius obtaining different levels of blurring!
 
 Please grade parts 2 and 4.
 
@@ -199,9 +200,6 @@ The code for this part is not complex. We start by obtaining the ray that would 
   }
 ```
 
-
-
 ## Note on collaboration
 
 We've been working together since the first project, as well as collaborating in research in our lab. For the CS284A course projects we've worked independently on the each task of the coding part of the assignment (in separate branches), and we would discuss issues / point out bugs / discuss alternative implementations. At the end we would either merge one of the two branches into master or combine parts of each branch. Now, for the write-up, we usually split the tasks. This has been working since we both have tight schedules and allows both of us to dig into the code (and learn in this process).
-
