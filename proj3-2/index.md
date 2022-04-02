@@ -33,10 +33,82 @@ Here we show a sequence of six images of the scene `CBspheres.dae` rendered with
 |   ![Spheres_Part1](./Figures/spheres_m100.png)   | |
 
 We have that the first image we only see the light source, which makes sense since we have no bounces. On the next level, with one bounce, the walls and floor get illuminated (direct illumination), as well as the areas of the light that gets directly reflected on the spheres to the camera. Here the right sphere (glass) has some chance of reflecting based on the Schlick's reflection coefficient, so it's not as smooth as the left one. Also, note that the region occluded by the spheres is dark (shadow for now).
+  
   In the next bounce (m=2), we can see light from the walls and floor reaching the spheres. The left sphere only reflects and we see the scene of m=1 reflected on it; the sphere on the right mostly refracts so it looks much darker, so most of the rays are travelling through the sphere in this bounce and will show up in the next bounce. We also have light reaching the roof at this bounce from whatever was illuminated in the previous bounce.
+  
   At m=3, the light travelling through the right sphere exits the sphere and displays signal that can be seen now - we can now see under the sphere's shadow the light from the main light source reaching the floor. The left sphere now reflects light from the ceiling and its shadow also receives more illumination. 
-  At m=4 we have that the light reflection on the left sphere reaches the right wall! (At m=1 reaches the left sphere, at m=2 reaches the right sphere after reflection, at m=3 travels through right sphere with refraction, and now at m=4 reaches the right wall). We can also see the light that bounces back from the floor back to the right sphere, this light partially reflects so we can see some illumination at the bottom of the sphere, and the rest refracts back inside the sphere. 
+ 
+ At m=4 we have that the light reflection on the left sphere reaches the right wall! (At m=1 reaches the left sphere, at m=2 reaches the right sphere after reflection, at m=3 travels through right sphere with refraction, and now at m=4 reaches the right wall). We can also see the light that bounces back from the floor back to the right sphere, this light partially reflects so we can see some illumination at the bottom of the sphere, and the rest refracts back inside the sphere. 
+  
   After this bounce, the main actors in reflection and refraction of the illumination have played and we have mostly converged, as we can see that m=4 looks quite similar to m=5 and m=100. 
+
+
+#### Code
+
+To achieve rendering of Mirror and Glass materials, we had to code reflection and refraction, and then use these for Mirror (reflection) and Glass (reflection and refraction).
+
+Reflection is quite simple, we just negate x and y coordinates of `wo` and we assign this new vector to `wi`. 
+```
+void BSDF::reflect(const Vector3D wo, Vector3D* wi) {
+  *wi = Vector3D(-wo.x, -wo.y, wo.z);
+}
+```
+
+For the case of refraction, we need to consider if there's total internal reflection, where in that case we return false as we don't refract, otherwise we use Snell's law to refract wo. If entering or exiting the material, we would use different index of refraction `eta = 1/ior` (if entering) or `eta = 1/ior` (if exiting). The code looks as follows:
+```
+bool BSDF::refract(const Vector3D wo, Vector3D* wi, double ior) {
+  // Normal is (0, 0, 1), then dot(wo, n) is just wo.z
+  double eta = (wo.z > 0) ? 1 / ior : ior;  // ray entering the surface if wo.z > 0
+  double wi_z_squared = 1 - eta * eta * (1 - wo.z * wo.z);
+
+  if (wi_z_squared < 0) {  // total internal reflection
+    return false;
+  }
+
+  *wi = Vector3D(-eta * wo.x, -eta * wo.y, sqrt(wi_z_squared));
+  if (wo.z > 0) {
+    wi->z *= -1;
+  }
+  return true;
+}
+```
+
+Finally, for the Mirror material, we just reflect, set the pdf to 1 and return the reflectance over the cosine of the incident ray angle:
+```
+Vector3D MirrorBSDF::sample_f(const Vector3D wo, Vector3D* wi, double* pdf) {
+  *pdf = 1.0;
+  reflect(wo, wi);
+  return reflectance / abs_cos_theta(*wi);
+}
+```
+The glass material is a bit more involved: If we have total internal reflection we just reflect and return the same as the mirror case. Otherwise, we compute the Schlick's reflection coefficient R and flip a coin with R probability to decide if we reflect or refract. The code looks as follows:
+```
+Vector3D GlassBSDF::sample_f(const Vector3D wo, Vector3D* wi, double* pdf) {
+  if (!refract(wo, wi, ior)) {  // total internal reflection
+    reflect(wo, wi);
+    *pdf = 1.0;
+    return reflectance / abs_cos_theta(*wi);
+  }
+  // else either reflection or refraction, based on coin flip with Schlick's approximation.
+
+  double eta = (wo.z > 0) ? 1 / ior : ior;  // ray entering the surface if wo.z > 0
+  double R = pow((1 - eta) / (1 + eta), 2);  // compute R0 first
+  R = R + (1 - R) * pow((1 - abs_cos_theta(wo)), 5);
+
+  if (coin_flip(R)) {
+    reflect(wo, wi);
+    *pdf = R;
+    return R * reflectance / abs_cos_theta(*wi);
+  } else {
+    // wi is already assigned when refracting
+    *pdf = 1 - R;
+    return (1 - R) * transmittance / abs_cos_theta(*wi) / (eta * eta);
+  }
+}
+```
+
+That's it!
+
 
 
 ## Part II: Microfacet Material (Extra)
