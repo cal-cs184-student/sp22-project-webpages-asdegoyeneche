@@ -21,6 +21,7 @@ Please grade parts 2 and 4.
 
 
 Here we show a sequence of six images of the scene `CBspheres.dae` rendered with various `max_ray_depth`. We used 256 samples per pixel and 4 samples per light:
+
 | m = 0 |                      m=1         |
 |:------------------:|:--------------:|
 |   ![Spheres_Part1](./Figures/spheres_m0.png)    | ![Spheres_Part1](./Figures/spheres_m1.png) | 
