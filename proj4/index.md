@@ -173,7 +173,7 @@ GIF for the simulation
 <img src="./Figures/Part5_4.gif" width="440">
 </p>
 
-####4.2: Displacement Mapping
+#### 4.2: Displacement Mapping
 Modified `Displacement.vert`
 ```asm
 float h(vec2 uv) {
@@ -199,7 +199,7 @@ GIF for the simulation
 </p>
 
 
-###Task 5: Environment-mapped Reflections
+### Task 5: Environment-mapped Reflections
 Modified `Mirror.frag`
 ```asm
 void main() {
