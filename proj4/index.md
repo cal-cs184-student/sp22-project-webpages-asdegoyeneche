@@ -8,6 +8,52 @@ description: Ke Wang - Alfredo De Goyeneche
 
 [Link to Code](https://github.com/cal-cs184-student/p4-clothsim-sp22-mr_graphics_4/tree/master)
 
+### Overview
+
+
+## Part 1: Masses and springs
+
+Here we have our cloth wireframe showing the structure of our point masses (vertices) and springs (edges):
+
+![Part1_3](./Figures/Part1_1.png) 
+
+We also present our wireframe without shearing constraints (where we only see horizontal and vertical springs), only shearing constraints (diagonal springs), and with all constraints:
+
+| (1) No shearing | (2) Only Shearing |
+|:----------:|:-------------|
+| ![Part1_2](./Figures/Part1_2.png) | ![Part1_2](./Figures/Part1_3.png) |
+| (3) All constraints |  |
+| ![Part1_3](./Figures/Part1_1.png) |  |
+
+
+## Part 2: Simulation via numerical integration
+
+#### Effects of spring constant `ks`
+
+We have that with a larger `ks` the cloth is more rigid and less flexible. On the other hand, a smaller `ks` allows for a more flexible and elastic cloth. However, for a very small `ks`, we have that mostly the cloth behavior is dominated by the 10% elongation constrain since here the spring forces alone are not enough to hold the cloth against gravity.
+
+Here we show the intermediate or resulting state for various values of `ks`:
+
+| `ks = 500` |  `ks = 5000` |
+|:----------:|:-------------|
+| ![Part2_2ks500](./Figures/Part2_2ks500.png) | ![Part2_2ks500](./Figures/Part2_1.png) |
+| `ks = 50000` |  `ks = 2000000` |
+| ![Part2_2ks500](./Figures/Part2_2ks50000.png) | ![Part2_2ks500](./Figures/Part2_2ks200000.png) |
+
+#### Effects of `density`
+
+
+#### Effects of `damping`
+
+
+#### Final resting state for default parameters
+
+
+
+## Part 3: Handling collisions with other objects
+
+
+
 
 ## Part 4: Handling self-collisions
 With self-collision, we can see the cloth folding on itself rather than clipping through it.
@@ -267,3 +313,6 @@ GIF for the simulation
 <p align="center">
 <img src="./Figures/Part_extra.gif" width="440">
 </p>
+
+
+## Extra Credit: Aerodynamic forces and wind simulation.
