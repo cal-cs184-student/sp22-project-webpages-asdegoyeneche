@@ -425,9 +425,13 @@ The code to include aerodynamic forces, which was added to `Cloth::simulate` bef
 The results are super cool! We can also note that these aerodynamic forces also play a role even if there's no wind: if the cloth has some speed, then there will be aerodynamic forces which will slow it down. Below we show some cool examples where we simulated wind for some pinned cloths:
 
 
+Vertical cloth with 2 vertices pinned:
+
 <p align="center">
 <img src="./Figures/Wind_2pinned.gif" width="720">
 </p>
+
+Vertical cloth with all 4 vertices pinned:
 
 <p align="center">
 <img src="./Figures/Wind_4pinned.gif" width="720">
