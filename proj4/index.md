@@ -358,4 +358,74 @@ GIF for the simulation
 </p>
 
 
-## Extra Credit: Aerodynamic forces and wind simulation.
+## Part 6 - Extra Credit: Aerodynamic forces and wind simulation.
+
+We implemented aerodynamic forces for wind simulation! To do so, we followed equations described [here](https://media.disneyanimation.com/uploads/production/publication_asset/115/asset/cloth_hair_wind.pdf) and [here](https://www.youtube.com/watch?v=BIyKHAi_8Rc). 
+
+![Part6_wind_eq](./Figures/Wind_eq.png)
+
+We also added a scaling coefficient term to enhance these forces. By following these aerodynamic equations, we obtain a different force at each position in the cloth that depends on: the cloth orientation (normal), point mass relative velocity to wind field, current area at point mass (area varies if cloth is stretched or not). In the equation: `rho` is the air density, `A` is the area at the point mass, `C_D` and `C_L` are the drag and lift coefficients, `v` is the relative speed with respect to the wind speed of the cloth at the point mass, and `n` is the cloth normal at the point mass position.
+
+For simplicity, we simulated a constant wind field (i.e. wind speed is the same everywhere). However, in the future, we could modify this and include a 3D varying wind field map. We could treat this wind field map as a texture and extract the wind velocity at some coordinate based on the point mass position. Also, we could (and should) incorporate how objects alter the wind field map, which could potentially be done following Navier-Stokes equations like in smoke simulation. 
+
+The code to include aerodynamic forces, which was added to `Cloth::simulate` before Verlet integration, looks as follows:
+
+```
+  // Extra credit: aerodynamic forces
+
+  bool ADD_AERODYNAMICS = true;
+
+  if (ADD_AERODYNAMICS) {
+
+    Vector3D wind_speed = Vector3D(0., 0., 30.);  // constant wind vector field (m/s)
+
+    double rho = 1.225;  // air density from google
+    double drag_coeff = 1.00;
+    double lift_coeff = 0.5;  // drag_coeff >= lift_coeff
+    double scale_coeff = 5.0;
+
+    for (int row = 0; row < num_height_points; row++) {  // y coord
+      for (int col = 0; col < num_width_points; col++) {  // x coord
+        PointMass &pm = point_masses[row * num_width_points + col];
+
+        // In edge case use neighbor to the other side to approximate normal
+        Vector3D delta_row;
+        Vector3D delta_col;
+        if (row > 0) {
+          delta_row = point_masses[(row - 1) * num_width_points + col].position - pm.position;
+        } else {
+          delta_row = pm.position - point_masses[(row + 1) * num_width_points + col].position;
+        }
+        if (col > 0) {
+          delta_col = point_masses[row * num_width_points + (col - 1)].position - pm.position;
+        } else {
+          delta_col = pm.position - point_masses[row * num_width_points + (col + 1)].position;
+        }
+
+        Vector3D cross_prod = cross(delta_row, delta_col);
+        double area = cross_prod.norm();
+        Vector3D normal = cross_prod.unit();
+
+        Vector3D relative_velocity = (pm.position - pm.last_position) / delta_t - wind_speed;
+        normal = (dot(normal, relative_velocity) > 0) ? normal : -normal;
+
+        Vector3D wind_force = (drag_coeff - lift_coeff) * dot(relative_velocity, normal) * relative_velocity;
+        wind_force += lift_coeff * relative_velocity.norm2() * normal;
+        wind_force *= 0.5 * rho * area;
+
+        pm.forces -= scale_coeff * wind_force;
+      }
+    }
+  }
+```
+
+The results are super cool! We can also note that these aerodynamic forces also play a role even if there's no wind: if the cloth has some speed, then there will be aerodynamic forces which will slow it down. Below we show some cool examples where we simulated wind for some pinned cloths:
+
+
+<p align="center">
+<img src="./Figures/Wind_2pinned.gif" width="720">
+</p>
+
+<p align="center">
+<img src="./Figures/Wind_4pinned.gif" width="720">
+</p>
