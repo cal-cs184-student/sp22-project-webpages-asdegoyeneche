@@ -34,7 +34,7 @@ We have that with a larger `ks` the cloth is more rigid and less flexible. On th
 
 Here we show the intermediate or resulting state for various values of `ks`:
 
-| `ks = 500` |  `ks = 5000` |
+| `ks = 500` |  `ks = 5000` (default) |
 |:----------:|:-------------|
 | ![Part2_2ks500](./Figures/Part2_2ks500.png) | ![Part2_2ks500](./Figures/Part2_1.png) |
 | `ks = 50000` |  `ks = 2000000` |
@@ -48,7 +48,7 @@ Effects of varying the `density` are similar to the inverse of the effects from 
 | `density = 1.5` |  `density = 7.5` |
 |:----------:|:-------------|
 | ![Part2_3density1_5](./Figures/Part2_3density1_5.png) | ![Part2_3density7_5](./Figures/Part2_3density7_5.png) |
-| `density = 15` |  `density = 30` |
+| `density = 15` (default) |  `density = 30` |
 | ![Part2_3density15](./Figures/Part2_3density15.png) | ![Part2_3density30](./Figures/Part2_3density30.png) |
 | `density = 150` |   |
 | ![Part2_3density150](./Figures/Part2_3density150.png) |  |
@@ -61,13 +61,13 @@ Increasing the damping percentage parameter makes our cloth fall more slowly and
 | `damping = 0.0%` |  `damping = 0.1%` |
 |:----------:|:-------------|
 | ![Part2_3damping0](./Figures/Part2_4damping0.png) | ![Part2_3damping01](./Figures/Part2_4damping01.png) |
-| `damping = 0.2%` |  `damping = 0.5%` |
+| `damping = 0.2%` (default) |  `damping = 0.5%` |
 | ![Part2_3damping02](./Figures/Part2_4damping02.png) | ![Part2_3damping05](./Figures/Part2_4damping05.png) |
 | `damping = 1.0%` |   |
 | ![Part2_3damping1](./Figures/Part2_4damping1.png) |  |
 
 
-#### Final resting state for default parameters
+### Final resting state for default parameters
 
 The final state for the default parameters produces a nice and realistic resting state for the cloth, where we have some folding in the middle where most of the cloth weight has to be supported, and smoothly flattens as we go lower: 
 
@@ -76,9 +76,29 @@ The final state for the default parameters produces a nice and realistic resting
 ## Part 3: Handling collisions with other objects
 
 
+#### Sphere
+
+Below we show the final resting state for our cloth collision with the sphere for multiple values of our `ks` parameter. As described in the previous section, a smaller `ks` decreases our spring forces and makes our cloth more flexible and stretchy, as it can be seen in the figure below for `ks=500` where the cloth stretches more and reaches lower positions. On the other hand, a larger `ks` parameter increases our cloth spring forces obtaining a more rigid cloth. This can be seen in the figure below for `ks=50000` where the cloth tries to stay more flat and stretches much less. We took the freedom to use the Blinn-Phong shader for more beautiful results.
+ 
+
+| `ks = 5000` (default) |  `ks = 500` |
+|:----------:|:-------------|
+| ![Part3_ks5000](./Figures/Part3_ks5000.png) | ![Part3_ks500](./Figures/Part3_ks500.png) |
+| `ks = 50000` |   |
+| ![Part3_ks50000](./Figures/Part3_ks50000.png) |  |
+
+
+#### Plane
+
+We can see that collisions with the plane work as well! The cloth nicely rests on the plane without going through (we show a view from above the plane and another from below the plane). We used the texture shader for a nice contrast between cloth and plane!
+
+| View from above plane |  View from below plane (cloth does not go through)|
+|:----------:|:-------------|
+| ![Part3_plane_above](./Figures/Part3_plane_above.png) | ![Part3_plane_below](./Figures/Part3_plane_below.png) |
 
 
 ## Part 4: Handling self-collisions
+
 With self-collision, we can see the cloth folding on itself rather than clipping through it.
 
 |           Early, initial self-collision           |                Intermediate state                 |
