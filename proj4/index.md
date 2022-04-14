@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Project 4: Cloth Sim
+title: Project 4 - Cloth Sim
 description: Ke Wang - Alfredo De Goyeneche
 ---
 
