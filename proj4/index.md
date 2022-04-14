@@ -40,15 +40,38 @@ Here we show the intermediate or resulting state for various values of `ks`:
 | `ks = 50000` |  `ks = 2000000` |
 | ![Part2_2ks500](./Figures/Part2_2ks50000.png) | ![Part2_2ks500](./Figures/Part2_2ks200000.png) |
 
-#### Effects of `density`
+#### Effects of `density` (in g/cm^2)
+
+Increasing the density produces a more heavier cloth, which 
+Effects of varying the `density` are similar to the inverse of the effects from varying `ks`. We have that by decreasing the cloth density, external forces (gravity) are reduced while the spring forces remain the same (another way to analyze is that since now the mass is lower, the acceleration produced by springs is larger - keeping gravity acceleration the same). Therefore, we have that the ratio of gravity force vs spring forces increases as we increase the density. This produces a heavier cloth that will deform more as we increase density, as it can be seen in the figure below.
+
+| `density = 1.5` |  `density = 7.5` |
+|:----------:|:-------------|
+| ![Part2_3density1_5](./Figures/Part2_3density1_5.png) | ![Part2_3density7_5](./Figures/Part2_3density7_5.png) |
+| `density = 15` |  `density = 30` |
+| ![Part2_3density15](./Figures/Part2_3density15.png) | ![Part2_3density30](./Figures/Part2_3density30.png) |
+| `density = 150` |   |
+| ![Part2_3density150](./Figures/Part2_3density150.png) |  |
 
 
 #### Effects of `damping`
 
+Increasing the damping percentage parameter makes our cloth fall more slowly and makes it look more rigid. Basically, by increasing the parameter, we are losing more energy (velocity in our case) while we fall and we smoothly converge to the final rest state. On the other hand, when we decrease damping, the cloth fall is much quicker and the cloth deforms much more, and we start to overshoot the final rest state and oscillate before converging. In the extreme case of no damping (`damping=0`), the cloth overshoots the convergence state and goes back up a lot and oscillates for a long long time (I didn't wait to see if it would eventually converged since it was taking quite a bit of time). This makes sense: if there's no energy losses, there's no reason for the cloth to reach a lower energy state (lower height and zero speed), so it makes sense for the cloth to keep going. However, even though there's no damping in this last case, there is some "energy losses" due to our model approximation: for example, we limit the maximum extension of our springs to 10% over their rest length, altering the natural behavior of the point masses and not respecting energy conservation laws. 
+
+| `damping = 0.0%` |  `damping = 0.1%` |
+|:----------:|:-------------|
+| ![Part2_3damping0](./Figures/Part2_4damping0.png) | ![Part2_3damping01](./Figures/Part2_4damping01.png) |
+| `damping = 0.2%` |  `damping = 0.5%` |
+| ![Part2_3damping02](./Figures/Part2_4damping02.png) | ![Part2_3damping05](./Figures/Part2_4damping05.png) |
+| `damping = 1.0%` |   |
+| ![Part2_3damping1](./Figures/Part2_4damping1.png) |  |
+
 
 #### Final resting state for default parameters
 
+The final state for the default parameters produces a nice and realistic resting state for the cloth, where we have some folding in the middle where most of the cloth weight has to be supported, and smoothly flattens as we go lower: 
 
+![Part2_2ks500](./Figures/Part2_1.png) 
 
 ## Part 3: Handling collisions with other objects
 
