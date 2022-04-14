@@ -10,6 +10,9 @@ description: Ke Wang - Alfredo De Goyeneche
 
 ### Overview
 
+In this project, we implement real-time simulation of cloth using a system based on masses and springs. We build the data structures to contain point masses and springs for our cloth, and we defined physical constraints to them. We used Verlet numerical integration over time to simulate the cloth movement. We also implemented constraints to avoid collisions with other objects as well as self-collisions accelerated with a spatial hash map. Finally, we implemented various shaders for our cloth and environment, including Diffuse, Blinn-Phong, Texture Mapping, Bump & Displacement Map, and Mirror.
+ 
+ As extra credit, we implemented a custom shader and also simulated wind!
 
 ## Part 1: Masses and springs
 
