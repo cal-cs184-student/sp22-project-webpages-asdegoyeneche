@@ -158,151 +158,51 @@ As we can see from the results, the falling cloth has much less folding and smot
 
 ## Part 5: Shaders
 
-### Task 1: Diffuse Shading
+### 1. Shader program:
 
-Modified `Diffuse.frag`
-```asm
-void main() {
-  // YOUR CODE HERE
-  vec3 l= u_light_pos - v_position.xyz;
-  float kd = 1;
-  vec3 l_d = kd*(u_light_intensity)*max(0,dot(v_normal.xyz,normalize(l)))/dot(l,l);
-  // (Placeholder code. You will want to replace it.)
-  out_color = vec4(l_d,1);
-}
-```
+Shader program (GLSL shader program) is a part of the graphic and rendering pipelines, which runs in parallel on GPU to accelerate the rendering process. Shader programs are used to create different lighting and material effect and properties (e.g., diffuse, mirror).
+In this project, we are primarily working on two shader types: vertex shaders and fragment shaders. Vertex shader manipulates each vertex of the rendered model and outputs the properties of the mesh (e.g.,normals, positions). We modified it to create the bumpy effects. 
+The fragment shader determines the color of each pixel that is going to be rendered. In our experiments, the vertex shader outputs the mesh information that is further used in the fragment shader.
 
-GIF for the simulation
+### 2. Blinn-Phong shading model
+
+Blinn-Phong shading model accounts for three different lighting effects: 1) ambient lighting; 2) diffuse shading; and 3) specular reflection. Ambient lighting gives a uniform color without considering the lighting and the object geometry. Diffuse shading gives isotropic reflection. Finally, specular reflection determines more realistic reflections based on the material properties.
+
+
+|                 Cloth with ambient lighting                 |                  Cloth with diffuse shading                   |
+|:-----------------------------------------------------------:|:-------------------------------------------------------------:|
+| <img src="./Figures/new_figures/Part5_1_a.gif" width="440"> |  <img src="./Figures/new_figures/Part5_1_d.gif" width="440">  |
+|               Cloth with specular reflection                |            Cloth with entire Blinn-Phong modeling             |
+| <img src="./Figures/new_figures/Part5_1_s.gif" width="440"> | <img src="./Figures/new_figures/Part5_1_all.gif" width="440"> |
+
+### 3. Texture mapping
+We modified the textures to a cute cat - june, and show the simulation gif here.
 <p align="center">
-<img src="./Figures/Part5_1.gif" width="440">
+<img src="./Figures/new_figures/Part5_2.gif" width="440">
 </p>
 
-### Task 2: Blinn-Phong Shading
+### 4. Bump and displacement mapping 
 
-Modified `Phong.frag`
+|                         Sphere with bump mapping                         |                     Sphere with displacement mapping                     |
+|:------------------------------------------------------------------------:|:------------------------------------------------------------------------:|
+| <img src="./Figures/new_figures/part5/Part5_3_b_sphere.png" width="440"> | <img src="./Figures/new_figures/part5/Part5_3_d_sphere.png" width="440"> |
+|                         Cloth with bump mapping                          |                     Cloth with displacement mapping                      |
+| <img src="./Figures/new_figures/part5/Part5_3_b_cloth.png" width="440">  | <img src="./Figures/new_figures/part5/Part5_3_d_cloth.png" width="440">  |
 
-```asm
-void main() {
-  // YOUR CODE HERE
-  vec3 vnorm = normalize(v_normal.xyz);
-  vec3 l= u_light_pos - v_position.xyz;
-  vec3 v = u_cam_pos - v_position.xyz;
+As we can see from the results, bump mapping transforms the local normal without modifying the actual mesh geometry, which gives us realistic reflection but relative fake mesh.
+In comparison, in addition to local normal transformation, displacement mapping also modify the textures of the mesh, giving more realistic visualization of the textures (e.g., intervals between the bricks).
 
-  vec3 h = normalize(normalize(l) + normalize(v));
-  vec3 I_a = normalize(vec3(1,0,1));
-  float k_a = 0.5;
-  float k_d = 0.5;
-  vec3 kd_term = k_d*(u_light_intensity/dot(l,l))*max(0,dot(vnorm,normalize(l)));
-  float k_s = 0.5;
-  float p = 20;
-  vec3 ks_term = k_s*(u_light_intensity/dot(l,l))*pow(max(0,dot(vnorm,h)),p);
-  // (Placeholder code. You will want to replace it.)
-  vec3 L_total = k_a*I_a + kd_term + ks_term;
-  out_color.rgb = L_total;
-  out_color.a = 1;
-}
-```
-GIF for the simulation
-<p align="center">
-<img src="./Figures/Part5_2.gif" width="440">
-</p>
+#### Changing the sphere mesh's coarseness
 
-We set `I_a` to be purple light.
+|                Sphere with bump mapping `-o 16 -a 16`                 |            Sphere with displacement mapping `-o 16 -a 16`             |
+|:---------------------------------------------------------------------:|:---------------------------------------------------------------------:|
+| <img src="./Figures/new_figures/part5/Part5_3_b_16.png" width="440">  | <img src="./Figures/new_figures/part5/Part5_3_d_16.png" width="440">  |
+|               Sphere with bump mapping `-o 128 -a 128`                |           Sphere with displacement mapping `-o 128 -a 128`            |
+| <img src="./Figures/new_figures/part5/Part5_3_b_128.png" width="440"> | <img src="./Figures/new_figures/part5/Part5_3_d_128.png" width="440"> |
 
-### Task 3: Texture Mapping
-Modified `Texture.frag`
-```asm
-void main() {
-  // YOUR CODE HERE
-  
-  // (Placeholder code. You will want to replace it.)
-  out_color = texture(u_texture_1,v_uv);
-//  out_color.a = 1;
-}
-```
+As we can see from the results, higher coarseness gives sharper rendered textures. (e.g., intervals between the bricks)
 
-GIF for the simulation
-<p align="center">
-<img src="./Figures/Part5_3.gif" width="440">
-</p>
-
-### Task 4: Displacement and Bump Mapping
-#### 4.1: Bump Mapping
-Modified `Bump.frag`
-```asm
-void main() {
-  // YOUR CODE HERE
-
-  vec3 v_norm = normalize(v_normal.xyz);
-  vec3 v_tang = normalize(v_tangent.xyz);
-  vec3 b = cross(v_norm,v_tang);
-  mat3 TBN = mat3(v_tang,b,v_norm);
-  float dU = (h(vec2(v_uv.x + 1/u_texture_2_size.x,v_uv.y))-h(v_uv))*u_height_scaling*u_normal_scaling;
-  float dV = (h(vec2(v_uv.x,v_uv.y+ 1/u_texture_2_size.y))-h(v_uv))*u_height_scaling*u_normal_scaling;
-  vec3 n0 = vec3(-dU,-dV, 1);
-  vec3 nd = TBN * n0;
-
-  vec3 vnorm = normalize(nd);
-  vec3 l= u_light_pos - v_position.xyz;
-  vec3 v = u_cam_pos - v_position.xyz;
-  vec3 h = normalize(normalize(l) + normalize(v));
-  vec3 I_a = normalize(vec3(1,0,1));
-  float k_a = 0.5;
-  float k_d = 0.5;
-  vec3 kd_term = k_d*(u_light_intensity/dot(l,l))*max(0,dot(vnorm,normalize(l)));
-  float k_s = 0.5;
-  float p = 20;
-  vec3 ks_term = k_s*(u_light_intensity/dot(l,l))*pow(max(0,dot(vnorm,h)),p);
-  // (Placeholder code. You will want to replace it.)
-  vec3 L_total = k_a*I_a + kd_term + ks_term;
-  out_color.rgb = L_total;
-  out_color.a = 1;
-}
-```
-
-GIF for the simulation
-<p align="center">
-<img src="./Figures/Part5_4.gif" width="440">
-</p>
-
-#### 4.2: Displacement Mapping
-Modified `Displacement.vert`
-```asm
-float h(vec2 uv) {
-  // You may want to use this helper function...
-  return texture(u_texture_2,uv).r;
-}
-
-void main() {
-  // YOUR CODE HERE
-
-  // (Placeholder code. You will want to replace it.)
-  v_position = u_model * (in_position+ in_normal*h(in_uv)*u_height_scaling);
-  v_normal = normalize(u_model * in_normal);
-  v_uv = in_uv;
-  v_tangent = normalize(u_model * in_tangent);
-  gl_Position = u_view_projection * u_model * (in_position+ in_normal*h(in_uv)*u_height_scaling);
-}
-```
-
-GIF for the simulation
-<p align="center">
-<img src="./Figures/Part5_5.gif" width="440">
-</p>
-
-
-### Task 5: Environment-mapped Reflections
-Modified `Mirror.frag`
-```asm
-void main() {
-
-  vec3 dir_cam = normalize(u_cam_pos - v_position.xyz);
-  vec3 v_norm = normalize(v_normal.xyz);
-  vec3 v_norm_scale = v_norm*dot(v_norm,dir_cam)*2;
-  vec3 wi = normalize(v_norm_scale - dir_cam);
-  out_color = texture(u_texture_cubemap,wi);
-}
-```
+### 5. Mirror shader
 
 GIF for the simulation
 <p align="center">
@@ -314,8 +214,7 @@ In this task, we created a new cube environment-mapping using our cat photos fro
 <img src="./Figures/posx.jpg" width="300">
 </p>
 
-
-### Extra Credit: Environment-mapped Displacement Mapping
+### 6. Extra Credit: Environment-mapped Displacement Mapping
 
 Now, we want to add our cat's textures to the displacement mapping! What we did is just sampling the light intensity term using the cube map: 
 
